@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.alistairfink.betteropendrive.ApiService.repositories.TestRepositoryProvider
+import com.alistairfink.betteropendrive.requestModels.TestRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -27,14 +28,15 @@ class Login : Activity()
 
     fun TestButton(view: View)
     {
-        val repository = TestRepositoryProvider.provideTesthRepository()
+        val repository = TestRepositoryProvider.provideTesthRepository();
+        var request = TestRequest(value = "testValue");
         compositeDisposable.add(
-                repository.test("testValue")
+                repository.test(request)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe ({
                             result ->
-                            Log.d("Result", "There are ${result.testResponse.message} Java developers in Lagos")
+                            var test = result;
                         }, { error ->
                             error.printStackTrace()
                         })
