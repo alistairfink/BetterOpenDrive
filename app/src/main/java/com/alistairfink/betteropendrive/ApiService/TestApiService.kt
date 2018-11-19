@@ -8,11 +8,15 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 public interface TestApiService {
     @POST("Post")
     fun test(@Body body: TestRequest): Observable<Result>
+
+    @GET("Get")
+    fun test2() : Observable<Result>
 
     companion object Factory {
         fun create(): TestApiService {

@@ -1,15 +1,17 @@
 package com.alistairfink.betteropendrive;
-import kotlinx.android.synthetic.main.activity_login.*;
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import com.alistairfink.betteropendrive.ApiService.repositories.TestRepositoryProvider
+import com.alistairfink.betteropendrive.R.id.Login_Email
+import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
+import com.alistairfink.betteropendrive.apiService.repositories.TestRepositoryProvider
+import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
 import com.alistairfink.betteropendrive.requestModels.TestRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_login.*
 
 class Login : Activity()
 {
@@ -21,15 +23,20 @@ class Login : Activity()
         setContentView(R.layout.activity_login);
     }
 
-    fun CheckLogin(userName:String, pass:String)
+    fun Login(view: View)
     {
-        Constants.OpenDriveBaseURL;
+        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository();
+        var request = SessionLoginRequest(
+            UserName = Login_Email.toString(), // THIS DOESN'T WORK
+            Password = Login_Password.toString()
+        );
+        var test = "test";
     }
 
     fun TestButton(view: View)
     {
         val repository = TestRepositoryProvider.provideTesthRepository();
-        var request = TestRequest(value = "testValue");
+        var request = TestRequest(Value = "testValue");
         compositeDisposable.add(
                 repository.test(request)
                         .observeOn(AndroidSchedulers.mainThread())
