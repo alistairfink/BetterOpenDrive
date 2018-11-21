@@ -27,10 +27,22 @@ class Login : Activity()
     {
         var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository();
         var request = SessionLoginRequest(
-            UserName = Login_Email.toString(), // THIS DOESN'T WORK
-            Password = Login_Password.toString()
+            UserName = Login_Email.text.toString(),
+            Password = Login_Password.text.toString()
         );
-        var test = "test";
+        compositeDisposable.add(
+                repository.sessionLogin(request)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            result ->
+                            android.os.Debug.waitForDebugger();
+                            var test = "test";
+                        },{
+                            error ->
+                            android.os.Debug.waitForDebugger();
+                            error.printStackTrace();
+                        })
+        );
     }
 
     fun TestButton(view: View)
@@ -43,7 +55,9 @@ class Login : Activity()
                         .subscribeOn(Schedulers.io())
                         .subscribe ({
                             result ->
+                            android.os.Debug.waitForDebugger();
                             var test = result;
+                            // test_text.text = test.toString();
                         }, { error ->
                             error.printStackTrace()
                         })
