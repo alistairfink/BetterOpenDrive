@@ -4,10 +4,9 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import com.alistairfink.betteropendrive.R.id.Login_Email
+import com.alistairfink.betteropendrive.RequestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
-import com.alistairfink.betteropendrive.apiService.repositories.TestRepositoryProvider
 import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
-import com.alistairfink.betteropendrive.requestModels.TestRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -23,7 +22,7 @@ class Login : Activity()
         setContentView(R.layout.activity_login);
     }
 
-    fun Login(view: View)
+    fun login(view: View)
     {
         var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository();
         var request = SessionLoginRequest(
@@ -48,22 +47,29 @@ class Login : Activity()
         );
     }
 
-    fun TestButton(view: View)
+    fun checkSessionId()
     {
-        val repository = TestRepositoryProvider.provideTesthRepository();
-        var request = TestRequest(Value = "testValue");
+        // TODO : Get session id from storage/check if there is one
+        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository();
+        var request = SessionExistsRequest(
+            SessionId =  ""
+        );
+
+
         compositeDisposable.add(
-                repository.test(request)
+                repository.sessionExists(request)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
-                        .subscribe ({
+                        .subscribe({
                             result ->
                             android.os.Debug.waitForDebugger();
-                            var test = result.testResponse.Message;
-                            // test_text.text = test.toString();
-                        }, { error ->
-                            error.printStackTrace()
+                            // TODO : Figure out how to work this since i can't return parent function here
+
+                        },{
+                            error ->
+                            android.os.Debug.waitForDebugger();
+                            error.printStackTrace();
                         })
-        )
+        );
     }
 }

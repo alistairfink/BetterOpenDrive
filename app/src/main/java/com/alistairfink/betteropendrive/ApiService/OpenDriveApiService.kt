@@ -1,7 +1,9 @@
 package com.alistairfink.betteropendrive.apiService
 
 import com.alistairfink.betteropendrive.Constants
+import com.alistairfink.betteropendrive.RequestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
+import com.alistairfink.betteropendrive.responseModels.SessionExistsResponse
 import com.alistairfink.betteropendrive.responseModels.SessionLoginResponse
 import io.reactivex.Observable
 import okhttp3.logging.HttpLoggingInterceptor
@@ -15,10 +17,13 @@ import retrofit2.http.POST
 
 interface OpenDriveApiService
 {
-
     @POST("session/login.json")
-    fun SessionLogin(@Body body: SessionLoginRequest)
+    fun sessionLogin(@Body body: SessionLoginRequest)
             : Observable<SessionLoginResponse>
+
+    @POST("session/exists.json")
+    fun sessionExists(@Body body: SessionExistsRequest)
+            : Observable<SessionExistsResponse>
 
     companion object Factory
     {
