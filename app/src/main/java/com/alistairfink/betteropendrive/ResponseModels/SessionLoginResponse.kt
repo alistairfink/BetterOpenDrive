@@ -3,24 +3,24 @@ package com.alistairfink.betteropendrive.responseModels
 import com.google.gson.annotations.SerializedName
 
 data class SessionLoginResponse(
-    @SerializedName("SessionID") var SessionID: String,
-    @SerializedName("UserName") var UserName: String,
-    @SerializedName("UserFirstName") var UserFirstName: String,
-    @SerializedName("UserLastName") var userLastName: String,
-    @SerializedName("AccType") var AccType: Int,
-    @SerializedName("UserLang") var UserLang: String,
-    @SerializedName("UserID") var UserID: String,
-    @SerializedName("IsAccountUser") var IsAccountUser: Boolean,
-    @SerializedName("DriveName") var DriveName: String,
-    @SerializedName("UserLevel") var UserLevel: Int,
-    @SerializedName("UserPlan") var UserPlan: String,
-    @SerializedName("FVersioning") var FVersioning: Int,
-    @SerializedName("UserDomain") var UserDomain: String,
-    @SerializedName("PartnerUsersDomain") var PartnerUsersDomain: String,
-    @SerializedName("UploadSpeedLimit") var UploadSpeedLimit: Int,
-    @SerializedName("DownloadSpeedLimit") var DownloadSpeedLimit: Int,
-    @SerializedName("UploadsPerSecond") var UploadsPerSecond: Int,
-    @SerializedName("DownloadsPerSecond") var DownloadsPerSecond: Int
+    @SerializedName("SessionID") val SessionID: String,
+    @SerializedName("UserName") val UserName: String,
+    @SerializedName("UserFirstName") val UserFirstName: String,
+    @SerializedName("UserLastName") val userLastName: String,
+    @SerializedName("AccType") val AccType: Int,
+    @SerializedName("UserLang") val UserLang: String,
+    @SerializedName("UserID") val UserID: String,
+    @SerializedName("IsAccountUser") val IsAccountUser: Boolean,
+    @SerializedName("DriveName") val DriveName: String,
+    @SerializedName("UserLevel") val UserLevel: Int,
+    @SerializedName("UserPlan") val UserPlan: String,
+    @SerializedName("FVersioning") val FVersioning: Int,
+    @SerializedName("UserDomain") val UserDomain: String,
+    @SerializedName("PartnerUsersDomain") val PartnerUsersDomain: String,
+    @SerializedName("UploadSpeedLimit") val UploadSpeedLimit: Int,
+    @SerializedName("DownloadSpeedLimit") val DownloadSpeedLimit: Int,
+    @SerializedName("UploadsPerSecond") val UploadsPerSecond: Int,
+    @SerializedName("DownloadsPerSecond") val DownloadsPerSecond: Int
 )
 
-data class SessionLoginResult(var response: SessionLoginResponse)
+data class SessionLoginResult(val response: SessionLoginResponse)

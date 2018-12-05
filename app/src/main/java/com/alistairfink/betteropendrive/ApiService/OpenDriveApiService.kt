@@ -12,7 +12,7 @@ import retrofit2.http.POST
 
 public interface OpenDriveApiService
 {
-    @POST("/session/login.json")
+    @POST("session/login.json")
     fun SessionLogin(@Body body: SessionLoginRequest)
             : Observable<SessionLoginResult>
 

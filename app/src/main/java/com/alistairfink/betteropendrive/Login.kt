@@ -33,9 +33,12 @@ class Login : Activity()
         compositeDisposable.add(
                 repository.sessionLogin(request)
                         .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
                         .subscribe({
                             result ->
                             android.os.Debug.waitForDebugger();
+                            var tfd = result; // response = null for some reason
+                            var sdfsdf = result.response.SessionID;
                             var test = "test";
                         },{
                             error ->
@@ -56,7 +59,7 @@ class Login : Activity()
                         .subscribe ({
                             result ->
                             android.os.Debug.waitForDebugger();
-                            var test = result;
+                            var test = result.testResponse.Message;
                             // test_text.text = test.toString();
                         }, { error ->
                             error.printStackTrace()
