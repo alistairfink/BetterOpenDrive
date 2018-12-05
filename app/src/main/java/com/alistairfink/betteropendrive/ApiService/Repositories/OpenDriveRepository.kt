@@ -2,7 +2,7 @@ package com.alistairfink.betteropendrive.apiService.repositories
 
 import com.alistairfink.betteropendrive.apiService.OpenDriveApiService
 import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
-import com.alistairfink.betteropendrive.responseModels.SessionLoginResult
+import com.alistairfink.betteropendrive.responseModels.SessionLoginResponse
 import io.reactivex.Observable
 
 object OpenDriveRepositoryProvider
@@ -15,7 +15,7 @@ object OpenDriveRepositoryProvider
 
 class OpenDriveRepository(var apiService: OpenDriveApiService)
 {
-    fun sessionLogin(body: SessionLoginRequest) : Observable<SessionLoginResult>
+    fun sessionLogin(body: SessionLoginRequest) : Observable<SessionLoginResponse>
     {
         return apiService.SessionLogin(body = body);
     }

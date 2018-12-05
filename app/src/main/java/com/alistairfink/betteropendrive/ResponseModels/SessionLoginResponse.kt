@@ -10,7 +10,7 @@ data class SessionLoginResponse(
     @SerializedName("AccType") val AccType: Int,
     @SerializedName("UserLang") val UserLang: String,
     @SerializedName("UserID") val UserID: String,
-    @SerializedName("IsAccountUser") val IsAccountUser: Boolean,
+    @SerializedName("IsAccountUser") val IsAccountUser: Int,
     @SerializedName("DriveName") val DriveName: String,
     @SerializedName("UserLevel") val UserLevel: Int,
     @SerializedName("UserPlan") val UserPlan: String,
@@ -22,5 +22,3 @@ data class SessionLoginResponse(
     @SerializedName("UploadsPerSecond") val UploadsPerSecond: Int,
     @SerializedName("DownloadsPerSecond") val DownloadsPerSecond: Int
 )
-
-data class SessionLoginResult(val response: SessionLoginResponse)

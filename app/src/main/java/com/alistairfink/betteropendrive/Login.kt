@@ -37,8 +37,8 @@ class Login : Activity()
                         .subscribe({
                             result ->
                             android.os.Debug.waitForDebugger();
-                            var tfd = result; // response = null for some reason
-                            var sdfsdf = result.response.SessionID;
+                            var tfd = result;
+                            var sdfsdf = result.SessionID;
                             var test = "test";
                         },{
                             error ->
