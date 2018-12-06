@@ -1,4 +1,4 @@
-package com.alistairfink.betteropendrive.RequestModels
+package com.alistairfink.betteropendrive.requestModels
 
 import com.google.gson.annotations.SerializedName
 

@@ -3,8 +3,8 @@ package com.alistairfink.betteropendrive;
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
-import com.alistairfink.betteropendrive.R.id.Login_Email
-import com.alistairfink.betteropendrive.RequestModels.SessionExistsRequest
+import com.alistairfink.betteropendrive.helpers.SharedPreferencesHelper
+import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
 import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,6 +20,7 @@ class Login : Activity()
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        // checkSessionId();
     }
 
     fun login(view: View)
@@ -36,9 +37,16 @@ class Login : Activity()
                         .subscribe({
                             result ->
                             android.os.Debug.waitForDebugger();
-                            var tfd = result;
-                            var sdfsdf = result.SessionID;
-                            var test = "test";
+                            var sessionId = result.SessionID;
+                            var userName = request.UserName;
+                            var pass = request.Password;
+                            // TODO : Finish this
+                            // Make a helper function for shared preferences
+                            var sharedPreferencesHelper = SharedPreferencesHelper(this);
+                            var test1 = sharedPreferencesHelper.getString("test");
+                            sharedPreferencesHelper.writeString("test", userName);
+                            var test2 = sharedPreferencesHelper.getString("test");
+                            var test3 = "";
                         },{
                             error ->
                             android.os.Debug.waitForDebugger();
@@ -50,6 +58,9 @@ class Login : Activity()
     fun checkSessionId()
     {
         // TODO : Get session id from storage/check if there is one
+
+
+
         var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository();
         var request = SessionExistsRequest(
             SessionId =  ""

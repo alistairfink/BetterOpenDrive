@@ -1,6 +1,6 @@
 package com.alistairfink.betteropendrive.apiService.repositories
 
-import com.alistairfink.betteropendrive.RequestModels.SessionExistsRequest
+import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.apiService.OpenDriveApiService
 import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
 import com.alistairfink.betteropendrive.responseModels.SessionExistsResponse
