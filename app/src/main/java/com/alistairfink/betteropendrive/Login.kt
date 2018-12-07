@@ -3,6 +3,8 @@ package com.alistairfink.betteropendrive;
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import com.alistairfink.betteropendrive.SharedPreferenceConstants.Companion.SessionId
+import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepository
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesHelper
 import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
@@ -23,13 +25,69 @@ class Login : Activity()
         // checkSessionId();
     }
 
-    fun login(view: View)
+    fun loginButton(view: View)
     {
-        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository();
         var request = SessionLoginRequest(
             UserName = Login_Email.text.toString(),
             Password = Login_Password.text.toString()
         );
+        login(request);
+    }
+
+    fun checkLogin()
+    {
+        var sharedPreferencesHelper = SharedPreferencesHelper(this);
+        var sessionID = sharedPreferencesHelper.getString(SharedPreferenceConstants.SessionId);
+        if (sessionID != null)
+        {
+            checkSessionID(sessionID);
+        }
+    }
+
+    fun checkSessionID(sessionID: String)
+    {
+        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository();
+        var request = SessionExistsRequest(
+                SessionId = sessionID
+        );
+        compositeDisposable.add(
+                repository.sessionExists(request)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            android.os.Debug.waitForDebugger();
+                            if (result.Result)
+                            {
+                                // TODO : Login here
+                            }
+                            else
+                            {
+                                // TODO : Get new SessionID here
+                            }
+                        }, { error ->
+                            error.printStackTrace();
+                        })
+        );
+    }
+
+    fun newSessionID()
+    {
+        var sharedPreferences = SharedPreferencesHelper(this);
+        var encryptedUser = sharedPreferences.getString(SharedPreferenceConstants.UserName);
+        var encryptedPass = sharedPreferences.getString(SharedPreferenceConstants.Password);
+        // TODO : Unencrypt these
+        var user = encryptedUser.toString();
+        var pass = encryptedPass.toString();
+        var request = SessionLoginRequest(
+                UserName = user,
+                Password = pass
+        );
+        login(request);
+    }
+
+    fun login(request: SessionLoginRequest)
+    {
+        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository();
         compositeDisposable.add(
                 repository.sessionLogin(request)
                         .observeOn(AndroidSchedulers.mainThread())
@@ -40,45 +98,15 @@ class Login : Activity()
                             var sessionId = result.SessionID;
                             var userName = request.UserName;
                             var pass = request.Password;
-                            // TODO : Finish this
-                            // Make a helper function for shared preferences
                             var sharedPreferencesHelper = SharedPreferencesHelper(this);
-                            var test1 = sharedPreferencesHelper.getString("test");
-                            sharedPreferencesHelper.writeString("test", userName);
-                            var test2 = sharedPreferencesHelper.getString("test");
-                            var test3 = "";
+                            sharedPreferencesHelper.writeString(SharedPreferenceConstants.SessionId, sessionId);
+                            // TODO : Gotta Encrypt these
+                            var encryptedUsername = "";
+                            var encryptedPass = "";
+                            sharedPreferencesHelper.writeString(SharedPreferenceConstants.UserName, encryptedUsername);
+                            sharedPreferencesHelper.writeString(SharedPreferenceConstants.Password, encryptedPass);
                         },{
                             error ->
-                            android.os.Debug.waitForDebugger();
-                            error.printStackTrace();
-                        })
-        );
-    }
-
-    fun checkSessionId()
-    {
-        // TODO : Get session id from storage/check if there is one
-
-
-
-        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository();
-        var request = SessionExistsRequest(
-            SessionId =  ""
-        );
-
-
-        compositeDisposable.add(
-                repository.sessionExists(request)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({
-                            result ->
-                            android.os.Debug.waitForDebugger();
-                            // TODO : Figure out how to work this since i can't return parent function here
-
-                        },{
-                            error ->
-                            android.os.Debug.waitForDebugger();
                             error.printStackTrace();
                         })
         );

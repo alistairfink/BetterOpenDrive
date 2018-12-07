@@ -1,11 +1,11 @@
 package com.alistairfink.betteropendrive.helpers
 
 import android.content.Context
-import com.alistairfink.betteropendrive.Constants
+import com.alistairfink.betteropendrive.SharedPreferenceConstants
 
 
 class SharedPreferencesHelper(context: Context) {
-    private val _sharedPreferences = context.getSharedPreferences(Constants.SharedPreferencesKey, Context.MODE_PRIVATE);
+    private val _sharedPreferences = context.getSharedPreferences(SharedPreferenceConstants.Key, Context.MODE_PRIVATE);
 
     fun writeString(key: String, value: String)
     {
@@ -25,7 +25,7 @@ class SharedPreferencesHelper(context: Context) {
         }
     }
 
-    fun getString(key: String) : String
+    fun getString(key: String) : String?
     {
         return _sharedPreferences.getString(key, null);
     }
