@@ -3,8 +3,6 @@ package com.alistairfink.betteropendrive;
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
-import com.alistairfink.betteropendrive.SharedPreferenceConstants.Companion.SessionId
-import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepository
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesHelper
 import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
@@ -20,33 +18,34 @@ class Login : Activity()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        // checkSessionId();
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login)
+        // checkLogin();
     }
 
-    fun loginButton(view: View)
+    private fun loginButton(view: View)
     {
         var request = SessionLoginRequest(
             UserName = Login_Email.text.toString(),
             Password = Login_Password.text.toString()
         );
-        login(request);
+        login(request)
     }
 
-    fun checkLogin()
+    private fun checkLogin()
     {
-        var sharedPreferencesHelper = SharedPreferencesHelper(this);
-        var sessionID = sharedPreferencesHelper.getString(SharedPreferenceConstants.SessionId);
+        var sharedPreferencesHelper = SharedPreferencesHelper(this)
+        var sessionID = sharedPreferencesHelper.getString(SharedPreferenceConstants.SessionId)
         if (sessionID != null)
         {
-            checkSessionID(sessionID);
+            checkSessionID(sessionID)
         }
+        // TODO : Unlock view at this point
     }
 
-    fun checkSessionID(sessionID: String)
+    private fun checkSessionID(sessionID: String)
     {
-        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository();
+        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
         var request = SessionExistsRequest(
                 SessionId = sessionID
         );
@@ -55,60 +54,90 @@ class Login : Activity()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
-                            android.os.Debug.waitForDebugger();
+                            android.os.Debug.waitForDebugger()
                             if (result.Result)
                             {
-                                // TODO : Login here
+                                // TODO : Ur good switch views
                             }
                             else
                             {
-                                // TODO : Get new SessionID here
+                                newSessionID()
                             }
                         }, { error ->
-                            error.printStackTrace();
+                            error.printStackTrace()
                         })
         );
     }
 
-    fun newSessionID()
+    private fun newSessionID()
     {
-        var sharedPreferences = SharedPreferencesHelper(this);
-        var encryptedUser = sharedPreferences.getString(SharedPreferenceConstants.UserName);
-        var encryptedPass = sharedPreferences.getString(SharedPreferenceConstants.Password);
-        // TODO : Unencrypt these
-        var user = encryptedUser.toString();
-        var pass = encryptedPass.toString();
+        var credentials = getUnencryptedCreds()
+        if(credentials ==  null)
+        {
+            // TODO : Make this not this.
+            throw Exception("wtf")
+        }
         var request = SessionLoginRequest(
-                UserName = user,
-                Password = pass
-        );
-        login(request);
+                UserName = credentials!!.UserName,
+                Password = credentials!!.Password
+        )
+        login(request)
     }
 
-    fun login(request: SessionLoginRequest)
+    private fun login(request: SessionLoginRequest)
     {
-        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository();
+        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
         compositeDisposable.add(
                 repository.sessionLogin(request)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             result ->
-                            android.os.Debug.waitForDebugger();
-                            var sessionId = result.SessionID;
-                            var userName = request.UserName;
+                            android.os.Debug.waitForDebugger()
+                            var sessionId = result.SessionID
+                            var userName = request.UserName
                             var pass = request.Password;
-                            var sharedPreferencesHelper = SharedPreferencesHelper(this);
-                            sharedPreferencesHelper.writeString(SharedPreferenceConstants.SessionId, sessionId);
-                            // TODO : Gotta Encrypt these
-                            var encryptedUsername = "";
-                            var encryptedPass = "";
-                            sharedPreferencesHelper.writeString(SharedPreferenceConstants.UserName, encryptedUsername);
-                            sharedPreferencesHelper.writeString(SharedPreferenceConstants.Password, encryptedPass);
+                            var sharedPreferencesHelper = SharedPreferencesHelper(this)
+                            sharedPreferencesHelper.writeString(SharedPreferenceConstants.SessionId, sessionId)
+                            setEncryptedCreds(Credentials(UserName = userName, Password = pass))
                         },{
                             error ->
-                            error.printStackTrace();
+                            error.printStackTrace()
                         })
         );
     }
+
+    private fun getUnencryptedCreds() : Credentials?
+    {
+        var sharedPreferences = SharedPreferencesHelper(this)
+        var encryptedUser = sharedPreferences.getString(SharedPreferenceConstants.UserName)
+        var encryptedPass = sharedPreferences.getString(SharedPreferenceConstants.Password)
+        if (encryptedUser == null || encryptedPass == null)
+        {
+            return null
+        }
+        // TODO : Unencrypt these
+        var unencryptedUser = encryptedUser.toString()
+        var unencryptedPass = encryptedPass.toString()
+        return Credentials(
+                UserName =  unencryptedUser,
+                Password =  unencryptedPass
+        )
+    }
+
+    private fun setEncryptedCreds(creds : Credentials)
+    {
+        var sharedPreferencesHelper = SharedPreferencesHelper(this)
+        // TODO : Gotta Encrypt these
+        var encryptedUser = creds.UserName;
+        var encryptedPass = creds.Password;
+        sharedPreferencesHelper.writeString(SharedPreferenceConstants.UserName, encryptedUser)
+        sharedPreferencesHelper.writeString(SharedPreferenceConstants.Password, encryptedPass)
+    }
 }
+
+data class Credentials
+(
+        val UserName : String,
+        val Password : String
+)
