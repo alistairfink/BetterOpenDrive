@@ -8,11 +8,14 @@
 
     <RelativeLayout
         android:id="@+id/LoginBack"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@color/colorPrimary"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <EditText
             android:id="@+id/Login_Email"
             android:layout_width="wrap_content"
@@ -43,11 +46,11 @@
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="87dp"
+            android:layout_alignParentBottom="true"
             android:layout_marginStart="57dp"
-            android:text="Button"
-            android:onClick="loginButton"/>
+            android:layout_marginBottom="87dp"
+            android:onClick="loginButton"
+            android:text="Button" />
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

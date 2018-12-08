@@ -4,7 +4,7 @@ import android.content.Context
 import com.alistairfink.betteropendrive.SharedPreferenceConstants
 
 
-class SharedPreferencesHelper(context: Context) {
+class SharedPreferencesClient(context: Context) {
     private val _sharedPreferences = context.getSharedPreferences(SharedPreferenceConstants.Key, Context.MODE_PRIVATE);
 
     fun writeString(key: String, value: String)

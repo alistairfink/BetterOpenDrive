@@ -3,7 +3,7 @@ package com.alistairfink.betteropendrive;
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
-import com.alistairfink.betteropendrive.helpers.SharedPreferencesHelper
+import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
 import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
@@ -20,6 +20,7 @@ class Login : Activity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        setTextFields(false);
         // checkLogin();
     }
 
@@ -34,13 +35,13 @@ class Login : Activity()
 
     private fun checkLogin()
     {
-        var sharedPreferencesHelper = SharedPreferencesHelper(this)
-        var sessionID = sharedPreferencesHelper.getString(SharedPreferenceConstants.SessionId)
+        var sharedPreferences = SharedPreferencesClient(this)
+        var sessionID = sharedPreferences.getString(SharedPreferenceConstants.SessionId)
         if (sessionID != null)
         {
             checkSessionID(sessionID)
         }
-        // TODO : Unlock view at this point
+        // TODO : Unlock view at this point for typing in creds
     }
 
     private fun checkSessionID(sessionID: String)
@@ -97,8 +98,8 @@ class Login : Activity()
                             var sessionId = result.SessionID
                             var userName = request.UserName
                             var pass = request.Password;
-                            var sharedPreferencesHelper = SharedPreferencesHelper(this)
-                            sharedPreferencesHelper.writeString(SharedPreferenceConstants.SessionId, sessionId)
+                            var sharedPreferences = SharedPreferencesClient(this)
+                            sharedPreferences.writeString(SharedPreferenceConstants.SessionId, sessionId)
                             setEncryptedCreds(Credentials(UserName = userName, Password = pass))
                         },{
                             error ->
@@ -109,7 +110,7 @@ class Login : Activity()
 
     private fun getUnencryptedCreds() : Credentials?
     {
-        var sharedPreferences = SharedPreferencesHelper(this)
+        var sharedPreferences = SharedPreferencesClient(this)
         var encryptedUser = sharedPreferences.getString(SharedPreferenceConstants.UserName)
         var encryptedPass = sharedPreferences.getString(SharedPreferenceConstants.Password)
         if (encryptedUser == null || encryptedPass == null)
@@ -127,12 +128,22 @@ class Login : Activity()
 
     private fun setEncryptedCreds(creds : Credentials)
     {
-        var sharedPreferencesHelper = SharedPreferencesHelper(this)
+        var sharedPreferences = SharedPreferencesClient(this)
         // TODO : Gotta Encrypt these
         var encryptedUser = creds.UserName;
         var encryptedPass = creds.Password;
-        sharedPreferencesHelper.writeString(SharedPreferenceConstants.UserName, encryptedUser)
-        sharedPreferencesHelper.writeString(SharedPreferenceConstants.Password, encryptedPass)
+        sharedPreferences.writeString(SharedPreferenceConstants.UserName, encryptedUser)
+        sharedPreferences.writeString(SharedPreferenceConstants.Password, encryptedPass)
+    }
+
+    private fun setTextFields(value : Boolean)
+    {
+        Login_Email.isFocusable = value
+        Login_Email.isFocusableInTouchMode = value
+        Login_Email.isClickable = value
+        Login_Password.isFocusable = value
+        Login_Password.isFocusableInTouchMode = value
+        Login_Password.isClickable = value
     }
 }
 
