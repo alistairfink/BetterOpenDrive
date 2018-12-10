@@ -6,7 +6,8 @@ class Constants
     {
         const val OpenDriveBaseURL = "https://dev.opendrive.com/api/v1/"
         const val KeyStoreKey = "com.alistairfink.betteropendrive.secretkey"
-        const val FixedIV = "0C81C77A5DDB678EE16FA2D5";
+        // TODO : Change this iv for prod
+        const val FixedIV = "0C81C77A5DDB";
     }
 }
 

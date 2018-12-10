@@ -33,15 +33,15 @@ class EncryptionHelper
         {
             val c = Cipher.getInstance(AES_MODE)
             c.init(Cipher.ENCRYPT_MODE, retrieveKey(), GCMParameterSpec(128, Constants.FixedIV.toByteArray(Charsets.UTF_8)))
-            var test = c.iv.toString()
             val encodedBytes = c.doFinal(value.toByteArray(Charsets.UTF_8))
             return Base64.encodeToString(encodedBytes, Base64.DEFAULT)
         }
-        fun decrypt(value: String) : String
+        fun decrypt(encodedBytes: String) : String
         {
+            var value = Base64.decode(encodedBytes, Base64.DEFAULT)
             val c = Cipher.getInstance(AES_MODE)
             c.init(Cipher.DECRYPT_MODE, retrieveKey(), GCMParameterSpec(128, Constants.FixedIV.toByteArray(Charsets.UTF_8)))
-            return c.doFinal(value.toByteArray(Charsets.UTF_8)).toString()
+            return String(c.doFinal(value), Charsets.UTF_8)
         }
     }
 }
