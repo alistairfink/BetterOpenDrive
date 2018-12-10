@@ -6,6 +6,7 @@ import android.view.View
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
+import com.alistairfink.betteropendrive.helpers.EncryptionHelper
 import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -20,7 +21,9 @@ class Login : Activity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        setTextFields(false);
+        EncryptionHelper.generateSecretKey()
+        setTextFields(false)
+        test()
         // checkLogin();
     }
 
@@ -144,6 +147,14 @@ class Login : Activity()
         Login_Password.isFocusable = value
         Login_Password.isFocusableInTouchMode = value
         Login_Password.isClickable = value
+    }
+
+    private fun test()
+    {
+        var test = "This_Is_A_Test_Value"
+        var encryptedTest = EncryptionHelper.encrypt(test)
+        var unencryptedTest = EncryptionHelper.decrypt(encryptedTest)
+        var test3 = ""
     }
 }
 
