@@ -6,6 +6,7 @@ import android.util.Base64
 import com.alistairfink.betteropendrive.Constants
 import java.security.Key
 import java.security.KeyStore
+import java.security.SecureRandom
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.spec.GCMParameterSpec
@@ -29,18 +30,25 @@ class EncryptionHelper
                 keyGenerator.generateKey()
             }
         }
-        fun encrypt(value: String) : String
+        fun encrypt(value: String) : EncryptionData
         {
+            val random = SecureRandom()
+            val randomIV = ByteArray(12)
+            random.nextBytes(randomIV)
             val c = Cipher.getInstance(AES_MODE)
-            c.init(Cipher.ENCRYPT_MODE, retrieveKey(), GCMParameterSpec(128, Constants.FixedIV.toByteArray(Charsets.UTF_8)))
+            c.init(Cipher.ENCRYPT_MODE, retrieveKey(), GCMParameterSpec(128, randomIV))
             val encodedBytes = c.doFinal(value.toByteArray(Charsets.UTF_8))
-            return Base64.encodeToString(encodedBytes, Base64.DEFAULT)
+            return EncryptionData(
+                    Value = Base64.encodeToString(encodedBytes, Base64.DEFAULT),
+                    IV = Base64.encodeToString(randomIV, Base64.DEFAULT)
+                    )
         }
-        fun decrypt(encodedBytes: String) : String
+        fun decrypt(encryptedData: EncryptionData) : String
         {
-            var value = Base64.decode(encodedBytes, Base64.DEFAULT)
+            var value = Base64.decode(encryptedData.Value, Base64.DEFAULT)
+            var iv = Base64.decode(encryptedData.IV, Base64.DEFAULT)
             val c = Cipher.getInstance(AES_MODE)
-            c.init(Cipher.DECRYPT_MODE, retrieveKey(), GCMParameterSpec(128, Constants.FixedIV.toByteArray(Charsets.UTF_8)))
+            c.init(Cipher.DECRYPT_MODE, retrieveKey(), GCMParameterSpec(128, iv))
             return String(c.doFinal(value), Charsets.UTF_8)
         }
     }
@@ -54,3 +62,8 @@ private fun retrieveKey() : Key
     keyStore.load(null)
     return keyStore.getKey(Constants.KeyStoreKey, null)
 }
+
+data class EncryptionData(
+        val Value: String,
+        val IV: String
+)

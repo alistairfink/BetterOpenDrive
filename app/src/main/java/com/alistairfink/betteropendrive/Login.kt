@@ -6,6 +6,8 @@ import android.view.View
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
+import com.alistairfink.betteropendrive.helpers.EncryptedCredentials
+import com.alistairfink.betteropendrive.helpers.EncryptionData
 import com.alistairfink.betteropendrive.helpers.EncryptionHelper
 import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,16 +25,16 @@ class Login : Activity()
         setContentView(R.layout.activity_login)
         EncryptionHelper.generateSecretKey()
         setTextFields(false)
-        test()
-        // checkLogin();
+        checkLogin()
     }
 
-    private fun loginButton(view: View)
+    @Suppress("UNUSED_PARAMETER")
+    fun loginButton(view: View)
     {
         var request = SessionLoginRequest(
             UserName = Login_Email.text.toString(),
             Password = Login_Password.text.toString()
-        );
+        )
         login(request)
     }
 
@@ -44,7 +46,7 @@ class Login : Activity()
         {
             checkSessionID(sessionID)
         }
-        // TODO : Unlock view at this point for typing in creds
+        setTextFields(true)
     }
 
     private fun checkSessionID(sessionID: String)
@@ -58,10 +60,9 @@ class Login : Activity()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
-                            android.os.Debug.waitForDebugger()
                             if (result.Result)
                             {
-                                // TODO : Ur good switch views
+                                loginSuccess()
                             }
                             else
                             {
@@ -78,12 +79,17 @@ class Login : Activity()
         var credentials = getUnencryptedCreds()
         if(credentials ==  null)
         {
-            // TODO : Make this not this.
-            throw Exception("wtf")
+            var sharedPrefs = SharedPreferencesClient(this)
+            sharedPrefs.removeKey(SharedPreferenceConstants.UserName)
+            sharedPrefs.removeKey(SharedPreferenceConstants.UserNameIV)
+            sharedPrefs.removeKey(SharedPreferenceConstants.Password)
+            sharedPrefs.removeKey(SharedPreferenceConstants.PasswordIV)
+            setTextFields(true)
+            return
         }
         var request = SessionLoginRequest(
-                UserName = credentials!!.UserName,
-                Password = credentials!!.Password
+                UserName = credentials.UserName,
+                Password = credentials.Password
         )
         login(request)
     }
@@ -97,13 +103,14 @@ class Login : Activity()
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             result ->
-                            android.os.Debug.waitForDebugger()
                             var sessionId = result.SessionID
                             var userName = request.UserName
                             var pass = request.Password;
                             var sharedPreferences = SharedPreferencesClient(this)
                             sharedPreferences.writeString(SharedPreferenceConstants.SessionId, sessionId)
                             setEncryptedCreds(Credentials(UserName = userName, Password = pass))
+                            setTextFields(false)
+                            loginSuccess()
                         },{
                             error ->
                             error.printStackTrace()
@@ -114,15 +121,16 @@ class Login : Activity()
     private fun getUnencryptedCreds() : Credentials?
     {
         var sharedPreferences = SharedPreferencesClient(this)
-        var encryptedUser = sharedPreferences.getString(SharedPreferenceConstants.UserName)
-        var encryptedPass = sharedPreferences.getString(SharedPreferenceConstants.Password)
-        if (encryptedUser == null || encryptedPass == null)
+        var encryptedCredentials = sharedPreferences.getEncryptedCredentials()
+        if (encryptedCredentials.UserName == null ||
+                encryptedCredentials.UserNameIV == null ||
+                encryptedCredentials.Password == null ||
+                encryptedCredentials.PasswordIV == null)
         {
             return null
         }
-        // TODO : Unencrypt these
-        var unencryptedUser = encryptedUser.toString()
-        var unencryptedPass = encryptedPass.toString()
+        var unencryptedUser = EncryptionHelper.decrypt(EncryptionData(encryptedCredentials.UserName.toString(), encryptedCredentials.UserNameIV.toString()))
+        var unencryptedPass = EncryptionHelper.decrypt(EncryptionData(encryptedCredentials.Password.toString(), encryptedCredentials.PasswordIV.toString()))
         return Credentials(
                 UserName =  unencryptedUser,
                 Password =  unencryptedPass
@@ -132,11 +140,14 @@ class Login : Activity()
     private fun setEncryptedCreds(creds : Credentials)
     {
         var sharedPreferences = SharedPreferencesClient(this)
-        // TODO : Gotta Encrypt these
-        var encryptedUser = creds.UserName;
-        var encryptedPass = creds.Password;
-        sharedPreferences.writeString(SharedPreferenceConstants.UserName, encryptedUser)
-        sharedPreferences.writeString(SharedPreferenceConstants.Password, encryptedPass)
+        var encryptedUser = EncryptionHelper.encrypt(creds.UserName)
+        var encryptedPass = EncryptionHelper.encrypt(creds.Password)
+        sharedPreferences.writeEncryptedCredentials(EncryptedCredentials(
+                UserName = encryptedUser.Value,
+                UserNameIV = encryptedUser.IV,
+                Password = encryptedPass.Value,
+                PasswordIV = encryptedPass.IV
+        ))
     }
 
     private fun setTextFields(value : Boolean)
@@ -149,12 +160,9 @@ class Login : Activity()
         Login_Password.isClickable = value
     }
 
-    private fun test()
+    private fun loginSuccess()
     {
-        var test = "This_Is_A_Test_Value"
-        var encryptedTest = EncryptionHelper.encrypt(test)
-        var unencryptedTest = EncryptionHelper.decrypt(encryptedTest)
-        var test3 = ""
+        // TODO : Make this switch to next view
     }
 }
 
