@@ -19,5 +19,6 @@ class SharedPreferenceConstants
         const val UserNameIV = "OpenDriveUserNameIV"
         const val Password = "OpenDrivePassword"
         const val PasswordIV = "OpenDrivePasswordIV"
+        const val Name = "Name"
     }
 }

@@ -4,5 +4,8 @@
         <item android:id="@+id/nav_item_one"
             android:icon="@drawable/ic_folder"
             android:title="Test" />
+        <item android:id="@+id/nav_item_two"
+            android:icon="@drawable/ic_folder"
+            android:title="Other" />
     </group>
 </menu>

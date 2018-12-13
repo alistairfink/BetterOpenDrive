@@ -1,6 +1,7 @@
 package com.alistairfink.betteropendrive;
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
@@ -106,9 +107,11 @@ class Login : Activity()
                             var sessionId = result.SessionID
                             var userName = request.UserName
                             var pass = request.Password;
+                            var name = result.UserFirstName + " " + result.userLastName
                             var sharedPreferences = SharedPreferencesClient(this)
                             sharedPreferences.writeString(SharedPreferenceConstants.SessionId, sessionId)
                             setEncryptedCreds(Credentials(UserName = userName, Password = pass))
+                            sharedPreferences.writeString(SharedPreferenceConstants.Name, name)
                             setTextFields(false)
                             loginSuccess()
                         },{
@@ -162,7 +165,9 @@ class Login : Activity()
 
     private fun loginSuccess()
     {
-        // TODO : Make this switch to next view
+        var intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }
 
