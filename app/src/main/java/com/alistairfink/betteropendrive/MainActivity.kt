@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         var sharedPreferences = SharedPreferencesClient(this)
         var name = sharedPreferences.getString(SharedPreferenceConstants.Name)
         nav_view.getHeaderView(0).nav_header_name.text = name
