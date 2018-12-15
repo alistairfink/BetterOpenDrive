@@ -5,13 +5,14 @@ import com.alistairfink.betteropendrive.apiService.OpenDriveApiService
 import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
 import com.alistairfink.betteropendrive.responseModels.SessionExistsResponse
 import com.alistairfink.betteropendrive.responseModels.SessionLoginResponse
+import com.alistairfink.betteropendrive.responseModels.UsersInfoResponse
 import io.reactivex.Observable
 
 object OpenDriveRepositoryProvider
 {
     fun provideOpenDriveRepository() : OpenDriveRepository
     {
-        return OpenDriveRepository(OpenDriveApiService.create());
+        return OpenDriveRepository(OpenDriveApiService.create())
     }
 }
 
@@ -20,12 +21,18 @@ class OpenDriveRepository(var apiService: OpenDriveApiService)
     fun sessionLogin(body: SessionLoginRequest)
             : Observable<SessionLoginResponse>
     {
-        return apiService.sessionLogin(body = body);
+        return apiService.sessionLogin(body = body)
     }
 
     fun sessionExists(body: SessionExistsRequest)
             : Observable<SessionExistsResponse>
     {
-        return apiService.sessionExists(body = body);
+        return apiService.sessionExists(body = body)
+    }
+
+    fun usersInfo(sessionId: String)
+            : Observable<UsersInfoResponse>
+    {
+        return apiService.usersInfo(SessionId = sessionId)
     }
 }

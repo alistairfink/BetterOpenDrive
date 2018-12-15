@@ -3,7 +3,10 @@ package com.alistairfink.betteropendrive;
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Base64
 import android.view.View
+import com.alistairfink.betteropendrive.apiService.repositories.MiscellaneousRepository
+import com.alistairfink.betteropendrive.apiService.repositories.MiscellaneousRepositoryProvider
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
@@ -15,6 +18,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
+import java.lang.Exception
+import java.net.URL
 
 class Login : Activity()
 {
@@ -104,6 +109,7 @@ class Login : Activity()
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             result ->
+                            setTextFields(false)
                             var sessionId = result.SessionID
                             var userName = request.UserName
                             var pass = request.Password;
@@ -112,13 +118,43 @@ class Login : Activity()
                             sharedPreferences.writeString(SharedPreferenceConstants.SessionId, sessionId)
                             setEncryptedCreds(Credentials(UserName = userName, Password = pass))
                             sharedPreferences.writeString(SharedPreferenceConstants.Name, name)
-                            setTextFields(false)
-                            loginSuccess()
+                            getProfileInfo(sessionId)
                         },{
                             error ->
                             error.printStackTrace()
                         })
         );
+    }
+
+    private fun getProfileInfo(sessionId: String)
+    {
+        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
+        compositeDisposable.add(
+                repository.usersInfo(sessionId)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            android.os.Debug.waitForDebugger()
+                            var repo = MiscellaneousRepositoryProvider.provideMiscellaneousApiServiceRepository()
+                            compositeDisposable.add(
+                                    repo.getImage(result.Avatar)
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribeOn(Schedulers.io())
+                                            .subscribe({ response ->
+                                                android.os.Debug.waitForDebugger()
+                                                var imageAsString = Base64.encodeToString(response.bytes(), Base64.DEFAULT)
+                                                var sharedPreferences = SharedPreferencesClient(this)
+                                                sharedPreferences.writeString(SharedPreferenceConstants.Avatar, imageAsString)
+                                                loginSuccess()
+                                            }, { error ->
+                                                error.printStackTrace()
+                                            })
+                            )
+                            var test = result
+                        }, { error ->
+                            error.printStackTrace()
+                        })
+        )
     }
 
     private fun getUnencryptedCreds() : Credentials?
