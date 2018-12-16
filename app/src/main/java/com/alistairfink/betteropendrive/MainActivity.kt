@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
 
-        displayView(R.id.nav_item_one)
+        displayView(R.id.nav_item_folder_browser)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?)
@@ -89,6 +89,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         var title = getString(R.string.app_name)
 
         when (viewId) {
+            R.id.nav_item_folder_browser ->
+            {
+                fragment = FolderBrowserFragment.newInstance(0)
+                title = "My OpenDrive"
+            }
             R.id.nav_item_one ->
             {
                 fragment = TestFragment()
