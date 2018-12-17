@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.alistairfink.betteropendrive.dataModels.FolderModel
+import com.alistairfink.betteropendrive.helpers.InternalStorageClient
 import kotlinx.android.synthetic.main.fragment_folder_browser.*
 
 class FolderBrowserFragment : Fragment()

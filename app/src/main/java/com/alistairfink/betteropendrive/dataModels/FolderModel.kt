@@ -4,28 +4,28 @@ import java.util.*
 
 data class FolderModel
 (
-        val Name: String,
-        val FolderId: String,
-        val ParentFolderId: String?,
-        val Folders: List<SubFolderModel>,
-        val Files: List<FileModel>
+        var Name: String,
+        var FolderId: String,
+        var ParentFolderId: String?,
+        var Folders: List<SubFolderModel>,
+        var Files: List<FileModel>
 )
 
 data class SubFolderModel
 (
-        val FolderId: String,
-        val Name: String,
-        val Link: String,
-        val DateCreated: Date,
-        val DateModified: Date
+        var FolderId: String,
+        var Name: String,
+        var Link: String,
+        var DateCreated: Date,
+        var DateModified: Date
 )
 
 data class FileModel
 (
-        val FileId: String,
-        val Name: String,
-        val Size: Int,
-        val DateModified: Date,
-        val FileHash: String,
-        val Link: String
+        var FileId: String,
+        var Name: String,
+        var Size: Int,
+        var DateModified: Date,
+        var FileHash: String,
+        var Link: String
 )

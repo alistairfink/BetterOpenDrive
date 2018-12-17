@@ -5,7 +5,7 @@ import com.alistairfink.betteropendrive.SharedPreferenceConstants
 
 
 class SharedPreferencesClient(context: Context) {
-    private val _sharedPreferences = context.getSharedPreferences(SharedPreferenceConstants.Key, Context.MODE_PRIVATE);
+    private val _sharedPreferences = context.getSharedPreferences(SharedPreferenceConstants.Key, Context.MODE_PRIVATE)
 
     fun writeString(key: String, value: String)
     {
