@@ -5,7 +5,8 @@ import com.alistairfink.betteropendrive.dataModels.FolderModel
 import com.google.gson.Gson
 import java.io.File
 
-class InternalStorageClient(context: Context) {
+class InternalStorageClient(context: Context)
+{
     private val _context = context;
 
     private fun write(fileContents: String, fileName: String)
