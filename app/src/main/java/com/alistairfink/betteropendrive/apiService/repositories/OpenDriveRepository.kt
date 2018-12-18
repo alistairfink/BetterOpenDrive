@@ -3,6 +3,7 @@ package com.alistairfink.betteropendrive.apiService.repositories
 import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.apiService.OpenDriveApiService
 import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
+import com.alistairfink.betteropendrive.responseModels.FolderListResponse
 import com.alistairfink.betteropendrive.responseModels.SessionExistsResponse
 import com.alistairfink.betteropendrive.responseModels.SessionLoginResponse
 import com.alistairfink.betteropendrive.responseModels.UsersInfoResponse
@@ -34,5 +35,11 @@ class OpenDriveRepository(var apiService: OpenDriveApiService)
             : Observable<UsersInfoResponse>
     {
         return apiService.usersInfo(SessionId = sessionId)
+    }
+
+    fun folderList(sessionId: String, folderId: String)
+            : Observable<FolderListResponse>
+    {
+        return apiService.folderList(SessionId = sessionId, FolderId = folderId)
     }
 }

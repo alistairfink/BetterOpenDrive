@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (viewId) {
             R.id.nav_item_folder_browser ->
             {
-                fragment = FolderBrowserFragment.newInstance(0)
+                fragment = FolderBrowserFragment.newInstance("0")
                 title = "My OpenDrive"
             }
             R.id.nav_item_one ->

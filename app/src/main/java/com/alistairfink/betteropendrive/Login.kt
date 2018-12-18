@@ -23,7 +23,7 @@ import java.net.URL
 
 class Login : Activity()
 {
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable();
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -77,7 +77,7 @@ class Login : Activity()
                         }, { error ->
                             error.printStackTrace()
                         })
-        );
+        )
     }
 
     private fun newSessionID()
@@ -123,7 +123,7 @@ class Login : Activity()
                             error ->
                             error.printStackTrace()
                         })
-        );
+        )
     }
 
     private fun getProfileInfo(sessionId: String)

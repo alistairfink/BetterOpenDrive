@@ -23,3 +23,11 @@ class SharedPreferenceConstants
         const val Avatar = "Avatar"
     }
 }
+
+class InternalStroageConstants
+{
+    companion object
+    {
+        const val FolderPrefix = "folder_"
+    }
+}

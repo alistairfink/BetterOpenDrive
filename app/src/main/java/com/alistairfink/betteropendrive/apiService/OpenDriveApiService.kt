@@ -3,6 +3,7 @@ package com.alistairfink.betteropendrive.apiService
 import com.alistairfink.betteropendrive.Constants
 import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
+import com.alistairfink.betteropendrive.responseModels.FolderListResponse
 import com.alistairfink.betteropendrive.responseModels.SessionExistsResponse
 import com.alistairfink.betteropendrive.responseModels.SessionLoginResponse
 import com.alistairfink.betteropendrive.responseModels.UsersInfoResponse
@@ -28,6 +29,10 @@ interface OpenDriveApiService
     @GET("users/info.json/{sessionId}")
     fun usersInfo(@Path("sessionId") SessionId: String)
             : Observable<UsersInfoResponse>
+
+    @GET("folder/list.json/{sessionId}/{folderId}")
+    fun folderList(@Path("sessionId") SessionId: String, @Path("folderId") FolderId: String)
+            : Observable<FolderListResponse>
 
     companion object Factory
     {

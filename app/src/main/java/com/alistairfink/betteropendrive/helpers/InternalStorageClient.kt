@@ -7,7 +7,7 @@ import java.io.File
 
 class InternalStorageClient(context: Context)
 {
-    private val _context = context;
+    private val _context = context
 
     private fun write(fileContents: String, fileName: String)
     {
