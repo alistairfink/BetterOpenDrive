@@ -1,10 +1,14 @@
 package com.alistairfink.betteropendrive
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
 import com.alistairfink.betteropendrive.dataModels.FolderModel
@@ -82,12 +86,36 @@ class FolderBrowserFragment : Fragment()
         folder_title.text = folder.Name
         // TODO : Change from listing textviews to other view
         folder_browser_layout.removeAllViews()
-        for (f in folder.Folders)
+        val height = folder_browser_header.height
+        var width = folder_browser_header.width
+        for (i in folder.Folders.indices)
         {
-            var testText = TextView(this.context)
-            testText.text = f.Name
-            folder_browser_layout.addView(testText)
+            var layout = LinearLayout(this.context)
+            layout.id =  i
+            layout.setBackgroundColor(Color.parseColor("#FFFFFF"))
+            layout.layoutParams = ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height)
+            layout.orientation = LinearLayout.HORIZONTAL
+            // Icon
+            var icon = ImageView(this.context)
+            icon.setImageResource(R.drawable.ic_folder)
+            icon.layoutParams = ViewGroup.LayoutParams(width*0.3f as Int, height)
+            layout.addView(icon)
+            // Title
+            var title = TextView(this.context)
+            title.text = folder.Folders[i].Name
+            title.textSize = 20f
+            title.gravity = Gravity.CENTER_VERTICAL
+            title.layoutParams = ViewGroup.LayoutParams(width*0.7f as Int, height)
+            layout.addView(title)
+            // Menu Icon
 
+            folder_browser_layout.addView(layout)
+
+            var layout2 = LinearLayout(this.context)
+            layout2.id =  i+100
+            layout2.setBackgroundColor(Color.parseColor("#000000"))
+            layout2.layoutParams = ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 5)
+            folder_browser_layout.addView(layout2)
         }
     }
 

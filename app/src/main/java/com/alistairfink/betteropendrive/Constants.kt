@@ -6,6 +6,8 @@ class Constants
     {
         const val OpenDriveBaseURL = "https://dev.opendrive.com/api/v1/"
         const val KeyStoreKey = "com.alistairfink.betteropendrive.secretkey"
+        const val FolderIDPrefix = "folder_"
+        const val FileIDPrefix = "file_"
     }
 }
 
