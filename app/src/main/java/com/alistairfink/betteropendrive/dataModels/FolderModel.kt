@@ -38,13 +38,15 @@ class FolderModelHelper
             }
 
             var parentFolderId = folderListResponse.ParentFolderId
+            var name = folderListResponse.Name
             if (isRoot)
             {
                 parentFolderId = "0"
+                name = "All Files"
             }
 
             var folderModel = FolderModel (
-                    Name = folderListResponse.Name,
+                    Name = name,
                     ParentFolderId = parentFolderId,
                     Folders = subFolders,
                     Files = files

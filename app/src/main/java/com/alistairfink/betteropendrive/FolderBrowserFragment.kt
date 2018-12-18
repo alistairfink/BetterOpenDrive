@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
 import com.alistairfink.betteropendrive.dataModels.FolderModel
 import com.alistairfink.betteropendrive.dataModels.FolderModelHelper
+import com.alistairfink.betteropendrive.dataModels.SubFolderModel
 import com.alistairfink.betteropendrive.helpers.InternalStorageClient
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -42,7 +43,7 @@ class FolderBrowserFragment : Fragment()
         var folder = internalStorage.readFolder(InternalStroageConstants.FolderPrefix+folderId)
         if (folder != null)
         {
-            renderFolder(folder)
+            renderViews(folder)
         }
         getFolder(folderId)
     }
@@ -69,15 +70,16 @@ class FolderBrowserFragment : Fragment()
 
                             var internalStorage = InternalStorageClient(this.context)
                             internalStorage.writeFolder(resultData, InternalStroageConstants.FolderPrefix+folderId)
-                            renderFolder(resultData)
+                            renderViews(resultData)
                         }, { error ->
                             error.printStackTrace()
                         })
         )
     }
 
-    private fun renderFolder(folder: FolderModel)
+    private fun renderViews(folder: FolderModel)
     {
+        folder_title.text = folder.Name
         // TODO : Change from listing textviews to other view
         folder_browser_layout.removeAllViews()
         for (f in folder.Folders)
@@ -88,4 +90,5 @@ class FolderBrowserFragment : Fragment()
 
         }
     }
+
 }
