@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
 import com.alistairfink.betteropendrive.dataModels.FolderModel
 import com.alistairfink.betteropendrive.dataModels.FolderModelHelper
@@ -38,6 +39,12 @@ class FolderBrowserFragment : Fragment()
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var folderId = arguments.getString("folderId")
+        var internalStorage = InternalStorageClient(this.context)
+        var folder = internalStorage.readFolder(InternalStroageConstants.FolderPrefix+folderId)
+        if (folder != null)
+        {
+            renderFolder(folder)
+        }
         getFolder(folderId)
     }
 
@@ -72,7 +79,14 @@ class FolderBrowserFragment : Fragment()
 
     private fun renderFolder(folder: FolderModel)
     {
-        // TODO : Render Folders
-        var test =""
+        // TODO : Change from listing textviews to other view
+        folder_browser_layout.removeAllViews()
+        for (f in folder.Folders)
+        {
+            var testText = TextView(this.context)
+            testText.text = f.Name
+            folder_browser_layout.addView(testText)
+
+        }
     }
 }
