@@ -1,13 +1,20 @@
 package com.alistairfink.betteropendrive.dataModels
 
+import android.util.Base64
+import com.alistairfink.betteropendrive.SharedPreferenceConstants
+import com.alistairfink.betteropendrive.apiService.repositories.MiscellaneousRepositoryProvider
+import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import com.alistairfink.betteropendrive.responseModels.FolderListResponse
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 class FolderModelHelper
 {
     companion object
     {
-        fun ToDataModel(folderListResponse: FolderListResponse, isRoot: Boolean = false): FolderModel
+        fun toDataModel(folderListResponse: FolderListResponse, isRoot: Boolean = false): FolderModel
         {
             var subFolders: MutableList<SubFolderModel> = mutableListOf()
             for (subFolder in folderListResponse.Folders)
@@ -16,8 +23,8 @@ class FolderModelHelper
                         FolderId = subFolder.FolderId,
                         Name = subFolder.Name,
                         Link = subFolder.Link,
-                        DateCreated = Date(subFolder.DateCreated),
-                        DateModified = Date(subFolder.DateModified)
+                        DateCreated = Date(subFolder.DateCreated*1000L),
+                        DateModified = Date(subFolder.DateModified*1000L)
                 )
                 subFolders.add(folder)
             }
@@ -25,14 +32,16 @@ class FolderModelHelper
             var files: MutableList<FileModel> = mutableListOf()
             for (file in folderListResponse.Files)
             {
-                // TODO : get thumbnail and save as base64
+                var thumbLink = file.ThumbLink
+                // TODO : Figure out a way to either do all of this async or get thumbnail synchronously and encode it
                 var fileModel = FileModel(
                         FileId = file.FileId,
                         Name = file.Name,
                         Size = file.Size,
-                        DateModified =  Date(file.DateModified),
+                        DateModified =  Date(file.DateModified*1000L),
                         FileHash = file.FileHash,
-                        Link = file.DownloadLink
+                        Link = file.DownloadLink,
+                        Thumbnail = file.ThumbLink
                 )
                 files.add(fileModel)
             }
@@ -81,5 +90,6 @@ data class FileModel
         var Size: Int,
         var DateModified: Date,
         var FileHash: String,
-        var Link: String
+        var Link: String,
+        var Thumbnail: String
 )

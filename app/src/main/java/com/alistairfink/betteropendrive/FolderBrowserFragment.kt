@@ -1,5 +1,6 @@
 package com.alistairfink.betteropendrive
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
 import com.alistairfink.betteropendrive.dataModels.FolderModel
 import com.alistairfink.betteropendrive.dataModels.FolderModelHelper
@@ -49,6 +51,7 @@ class FolderBrowserFragment : Fragment()
         {
             renderViews(folder)
         }
+
         getFolder(folderId)
     }
 
@@ -65,11 +68,11 @@ class FolderBrowserFragment : Fragment()
                             var resultData =
                                     if (folderId == "0")
                                     {
-                                        FolderModelHelper.ToDataModel(result, true)
+                                        FolderModelHelper.toDataModel(result, true)
                                     }
                                     else
                                     {
-                                        FolderModelHelper.ToDataModel(result)
+                                        FolderModelHelper.toDataModel(result)
                                     }
 
                             var internalStorage = InternalStorageClient(this.context)
@@ -84,31 +87,10 @@ class FolderBrowserFragment : Fragment()
     private fun renderViews(folder: FolderModel)
     {
         folder_title.text = folder.Name
-        // TODO : Change from listing textviews to other view
         folder_browser_layout.removeAllViews()
-        val height = folder_browser_header.height
-        var width = folder_browser_header.width
         for (i in folder.Folders.indices)
         {
-            var layout = LinearLayout(this.context)
-            layout.id =  i
-            layout.setBackgroundColor(Color.parseColor("#FFFFFF"))
-            layout.layoutParams = ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height)
-            layout.orientation = LinearLayout.HORIZONTAL
-            // Icon
-            var icon = ImageView(this.context)
-            icon.setImageResource(R.drawable.ic_folder)
-            icon.layoutParams = ViewGroup.LayoutParams(width*0.3f as Int, height)
-            layout.addView(icon)
-            // Title
-            var title = TextView(this.context)
-            title.text = folder.Folders[i].Name
-            title.textSize = 20f
-            title.gravity = Gravity.CENTER_VERTICAL
-            title.layoutParams = ViewGroup.LayoutParams(width*0.7f as Int, height)
-            layout.addView(title)
-            // Menu Icon
-
+            var layout = createFolder(folder.Folders[i], this.context, i)
             folder_browser_layout.addView(layout)
 
             var layout2 = LinearLayout(this.context)
@@ -119,4 +101,51 @@ class FolderBrowserFragment : Fragment()
         }
     }
 
+    private fun createFolder(folder: SubFolderModel, context: Context, index: Int): LinearLayout
+    {
+        var layout = LinearLayout(context)
+        val height = folder_browser_header.height
+        var width = folder_browser_header.width
+        // Layout Stuff
+        layout.id = index
+        layout.setBackgroundColor(Color.parseColor("#FFFFFF"))
+        layout.layoutParams = ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height)
+        layout.orientation = LinearLayout.HORIZONTAL
+        layout.setOnClickListener {
+            onClickFolder(folder)
+        }
+        // Icon
+        var icon = ImageView(context)
+        icon.setImageResource(R.drawable.ic_folder_open)
+        icon.setPadding(20, 0,20,0)
+        icon.layoutParams = ViewGroup.LayoutParams(120, height)
+        layout.addView(icon)
+        // Title
+        var title = TextView(context)
+        title.text = folder.Name
+        title.textSize = 15f
+        title.gravity = Gravity.CENTER_VERTICAL
+        title.layoutParams = ViewGroup.LayoutParams(width - 240, height)
+        layout.addView(title)
+        // Menu Icon
+        var menu = ImageView(context)
+        menu.setImageResource(R.drawable.ic_menu)
+        menu.setPadding(20, 0,20,0)
+        menu.layoutParams = ViewGroup.LayoutParams(120, height)
+        menu.setOnClickListener {
+            onClickFolderMenu(folder)
+        }
+        layout.addView(menu)
+        return layout
+    }
+
+    private fun onClickFolderMenu(folder: SubFolderModel)
+    {
+
+    }
+
+    private fun onClickFolder(folder: SubFolderModel)
+    {
+
+    }
 }

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Base64
 import android.view.View
-import com.alistairfink.betteropendrive.apiService.repositories.MiscellaneousRepository
 import com.alistairfink.betteropendrive.apiService.repositories.MiscellaneousRepositoryProvider
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
@@ -18,8 +17,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
-import java.lang.Exception
-import java.net.URL
 
 class Login : Activity()
 {
@@ -109,6 +106,7 @@ class Login : Activity()
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             result ->
+                            android.os.Debug.waitForDebugger()
                             setTextFields(false)
                             var sessionId = result.SessionID
                             var userName = request.UserName
@@ -121,6 +119,7 @@ class Login : Activity()
                             getProfileInfo(sessionId)
                         },{
                             error ->
+                            android.os.Debug.waitForDebugger()
                             error.printStackTrace()
                         })
         )
@@ -150,7 +149,6 @@ class Login : Activity()
                                                 error.printStackTrace()
                                             })
                             )
-                            var test = result
                         }, { error ->
                             error.printStackTrace()
                         })
