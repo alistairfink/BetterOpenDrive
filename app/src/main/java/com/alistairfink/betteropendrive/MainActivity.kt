@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (viewId) {
             R.id.nav_item_folder_browser ->
             {
-                fragment = FolderBrowserFragment.newInstance("0")
+                fragment = FolderBrowserFragment.newInstance("MjdfNDc5OTI5X3FKTjBF")
                 title = "My OpenDrive"
             }
             R.id.nav_item_one ->
@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // set the toolbar title
         if (supportActionBar != null) {
-            supportActionBar!!.setTitle(title)
+            supportActionBar!!.title = title
         }
 
         val drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
