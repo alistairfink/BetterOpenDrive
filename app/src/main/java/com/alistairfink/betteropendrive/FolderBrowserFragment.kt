@@ -24,13 +24,15 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.folder_browser_item.view.*
 import kotlinx.android.synthetic.main.fragment_folder_browser.*
 import java.text.SimpleDateFormat
+import java.util.*
 
 class FolderBrowserFragment : Fragment()
 {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private lateinit var listView: ListView
 
-    companion object {
+    companion object
+    {
         fun newInstance(folderId: String): FolderBrowserFragment
         {
             var fragment = FolderBrowserFragment()
@@ -40,16 +42,18 @@ class FolderBrowserFragment : Fragment()
             return fragment
         }
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanteState: Bundle?): View
     {
         return inflater.inflate(R.layout.fragment_folder_browser, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?)
+    {
         super.onViewCreated(view, savedInstanceState)
         var folderId = arguments.getString("folderId")
         var internalStorage = InternalStorageClient(this.context)
-        var folder = internalStorage.readFolder(InternalStroageConstants.FolderPrefix+folderId)
+        var folder = internalStorage.readFolder(InternalStroageConstants.FolderPrefix + folderId)
         if (folder != null)
         {
             renderViews(folder)
@@ -79,7 +83,7 @@ class FolderBrowserFragment : Fragment()
                                     }
 
                             var internalStorage = InternalStorageClient(this.context)
-                            internalStorage.writeFolder(resultData, InternalStroageConstants.FolderPrefix+folderId)
+                            internalStorage.writeFolder(resultData, InternalStroageConstants.FolderPrefix + folderId)
                             renderViews(resultData)
                         }, { error ->
                             error.printStackTrace()
@@ -96,14 +100,15 @@ class FolderBrowserFragment : Fragment()
         var adapter = FolderBrowserItemAdapter(this.context, renderList)
         folder_browser_list.layoutManager = LinearLayoutManager(this.context)
         folder_browser_list.adapter = adapter
-        folder_browser_list.addOnItemClickListener(object: OnItemClickListener {
-            override fun onItemClicked(position: Int, view: View?) {
-                var folder = adapter.data[position]
-                if (folder is SubFolderModel)
+        folder_browser_list.addOnItemClickListener(object : OnItemClickListener
+        {
+            override fun onItemClicked(position: Int, view: View?)
+            {
+                var item = adapter.data[position]
+                if (item is SubFolderModel)
                 {
-                    onClickFolder(folder)
+                    onClickFolder(item)
                 }
-
             }
         })
     }
@@ -118,77 +123,85 @@ class FolderBrowserFragment : Fragment()
         fragmentTransaction.commit()
     }
 
-    private fun RecyclerView.addOnItemClickListener(onClickListener: OnItemClickListener) {
-        this.addOnChildAttachStateChangeListener(object: RecyclerView.OnChildAttachStateChangeListener {
-            override fun onChildViewDetachedFromWindow(view: View?) {
+    private fun RecyclerView.addOnItemClickListener(onClickListener: OnItemClickListener)
+    {
+        this.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener
+        {
+            override fun onChildViewDetachedFromWindow(view: View?)
+            {
                 view?.setOnClickListener(null)
             }
 
-            override fun onChildViewAttachedToWindow(view: View?) {
-                view?.setOnClickListener{
+            override fun onChildViewAttachedToWindow(view: View?)
+            {
+                view?.setOnClickListener {
                     val holder = getChildViewHolder(view)
                     onClickListener.onItemClicked(holder.adapterPosition, view)
                 }
             }
         })
     }
-}
 
-class FolderBrowserItemAdapter(val context: Context, var data: List<Any>) : RecyclerView.Adapter<FolderBrowserItemHolder>()
-{
-    override fun getItemCount(): Int
+    class FolderBrowserItemAdapter(private val context: Context, var data: List<Any>) : RecyclerView.Adapter<FolderBrowserItemHolder>()
     {
-        return data.size
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): FolderBrowserItemHolder {
-        return FolderBrowserItemHolder(LayoutInflater.from(context).inflate(R.layout.folder_browser_item, parent, false))
-    }
-
-    override fun onBindViewHolder(holder: FolderBrowserItemHolder?, i: Int) {
-        var listItem = data[i]
-        if (holder == null)
+        override fun getItemCount(): Int
         {
-            return
+            return data.size
         }
 
-        if (listItem is SubFolderModel) {
-            holder.item.icon.setImageResource(R.drawable.ic_folder_open)
-            holder.item.name_layout.name.text = listItem.Name
-            var date = "Modified: " + SimpleDateFormat("MMM dd yyyy").format(listItem.DateModified)
-            holder.item.name_layout.date.text = date
-            holder.item.menu.setOnClickListener {
-                onClickFolderMenu(listItem)
+        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): FolderBrowserItemHolder
+        {
+            return FolderBrowserItemHolder(LayoutInflater.from(context).inflate(R.layout.folder_browser_item, parent, false))
+        }
+
+        override fun onBindViewHolder(holder: FolderBrowserItemHolder?, i: Int)
+        {
+            var listItem = data[i]
+            if (holder == null)
+            {
+                return
+            }
+
+            if (listItem is SubFolderModel)
+            {
+                holder.item.icon.setImageResource(R.drawable.ic_folder_open)
+                holder.item.name_layout.name.text = listItem.Name
+                var date = "Modified: " + SimpleDateFormat("MMM dd yyyy", Locale.getDefault()).format(listItem.DateModified)
+                holder.item.name_layout.date.text = date
+                holder.item.menu.setOnClickListener {
+                    onClickFolderMenu(listItem)
+                }
+            }
+            else if (listItem is FileModel)
+            {
+                Picasso.with(context).load(Uri.parse(listItem.Thumbnail)).into(holder.item.icon)
+                holder.item.name_layout.name.text = listItem.Name
+                var date = "Modified: " + SimpleDateFormat("MMM dd yyyy", Locale.getDefault()).format(listItem.DateModified)
+                holder.item.name_layout.date.text = date
+                holder.item.menu.setOnClickListener {
+                    onClickFileMenu(listItem)
+                }
             }
         }
-        else if (listItem is FileModel)
+
+        private fun onClickFolderMenu(folder: SubFolderModel)
         {
-            Picasso.with(context).load(Uri.parse(listItem.Thumbnail)).into(holder.item.icon)
-            holder.item.name_layout.name.text = listItem.Name
-            var date = "Modified: " + SimpleDateFormat("MMM dd yyyy").format(listItem.DateModified)
-            holder.item.name_layout.date.text = date
-            holder.item.menu.setOnClickListener {
-                onClickFileMenu(listItem)
-            }
+            Toast.makeText(context, "Folder Clicked " + folder.FolderId, Toast.LENGTH_SHORT).show()
+        }
+
+        private fun onClickFileMenu(file: FileModel)
+        {
+            Toast.makeText(context, "File Clicked " + file.FileId, Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun onClickFolderMenu(folder: SubFolderModel)
+    class FolderBrowserItemHolder(view: View) : RecyclerView.ViewHolder(view)
     {
-        Toast.makeText(context, "Folder Clicked", Toast.LENGTH_SHORT).show()
+        val item = view.folder_browser_item!!
     }
 
-    private fun onClickFileMenu(folder: FileModel)
+    interface OnItemClickListener
     {
-        Toast.makeText(context, "File Clicked", Toast.LENGTH_SHORT).show()
+        fun onItemClicked(position: Int, view: View?)
     }
-}
-
-class FolderBrowserItemHolder(view: View): RecyclerView.ViewHolder(view)
-{
-    val item = view.folder_browser_item!!
-}
-
-interface OnItemClickListener {
-    fun onItemClicked(position: Int,  view: View?)
 }
