@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -92,14 +94,18 @@ class FolderBrowserFragment : Fragment()
         renderList.addAll(folder.Folders)
         renderList.addAll(folder.Files)
         var adapter = FolderBrowserItemAdapter(this.context, renderList)
+        folder_browser_list.layoutManager = LinearLayoutManager(this.context)
         folder_browser_list.adapter = adapter
-        folder_browser_list.setOnItemClickListener { adapter, view, i, l ->
-            var folder = adapter.getItemAtPosition(i)
-            if (folder is SubFolderModel)
-            {
-                onClickFolder(folder)
+        folder_browser_list.addOnItemClickListener(object: OnItemClickListener {
+            override fun onItemClicked(position: Int, view: View?) {
+                var folder = adapter.data[position]
+                if (folder is SubFolderModel)
+                {
+                    onClickFolder(folder)
+                }
+
             }
-        }
+        })
     }
 
     private fun onClickFolder(folder: SubFolderModel)
@@ -111,49 +117,60 @@ class FolderBrowserFragment : Fragment()
         fragmentTransaction.add(R.id.content_frame, fragment)
         fragmentTransaction.commit()
     }
+
+    private fun RecyclerView.addOnItemClickListener(onClickListener: OnItemClickListener) {
+        this.addOnChildAttachStateChangeListener(object: RecyclerView.OnChildAttachStateChangeListener {
+            override fun onChildViewDetachedFromWindow(view: View?) {
+                view?.setOnClickListener(null)
+            }
+
+            override fun onChildViewAttachedToWindow(view: View?) {
+                view?.setOnClickListener{
+                    val holder = getChildViewHolder(view)
+                    onClickListener.onItemClicked(holder.adapterPosition, view)
+                }
+            }
+        })
+    }
 }
 
-class FolderBrowserItemAdapter(val context: Context, var data: List<Any>) : BaseAdapter()
+class FolderBrowserItemAdapter(val context: Context, var data: List<Any>) : RecyclerView.Adapter<FolderBrowserItemHolder>()
 {
-    // TODO : Convert this to RecyclerView
-    private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    override fun getItemCount(): Int
+    {
+        return data.size
+    }
 
-    override fun getView(i: Int, vire: View?, parent: ViewGroup?): View {
-        var listItem = getItem(i)
-        val item = inflater.inflate(R.layout.folder_browser_item, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): FolderBrowserItemHolder {
+        return FolderBrowserItemHolder(LayoutInflater.from(context).inflate(R.layout.folder_browser_item, parent, false))
+    }
+
+    override fun onBindViewHolder(holder: FolderBrowserItemHolder?, i: Int) {
+        var listItem = data[i]
+        if (holder == null)
+        {
+            return
+        }
 
         if (listItem is SubFolderModel) {
-            item.icon.setImageResource(R.drawable.ic_folder_open)
-            item.name_layout.name.text = listItem.Name
+            holder.item.icon.setImageResource(R.drawable.ic_folder_open)
+            holder.item.name_layout.name.text = listItem.Name
             var date = "Modified: " + SimpleDateFormat("MMM dd yyyy").format(listItem.DateModified)
-            item.name_layout.date.text = date
-            item.menu.setOnClickListener {
+            holder.item.name_layout.date.text = date
+            holder.item.menu.setOnClickListener {
                 onClickFolderMenu(listItem)
             }
         }
         else if (listItem is FileModel)
         {
-            Picasso.with(context).load(Uri.parse(listItem.Thumbnail)).into(item.icon)
-            item.name_layout.name.text = listItem.Name
+            Picasso.with(context).load(Uri.parse(listItem.Thumbnail)).into(holder.item.icon)
+            holder.item.name_layout.name.text = listItem.Name
             var date = "Modified: " + SimpleDateFormat("MMM dd yyyy").format(listItem.DateModified)
-            item.name_layout.date.text = date
-            item.menu.setOnClickListener {
+            holder.item.name_layout.date.text = date
+            holder.item.menu.setOnClickListener {
                 onClickFileMenu(listItem)
             }
         }
-        return item
-    }
-
-    override fun getItem(i: Int): Any {
-        return data[i]
-    }
-
-    override fun getItemId(i: Int): Long {
-        return i.toLong()
-    }
-
-    override fun getCount(): Int {
-        return this.data.size
     }
 
     private fun onClickFolderMenu(folder: SubFolderModel)
@@ -165,6 +182,13 @@ class FolderBrowserItemAdapter(val context: Context, var data: List<Any>) : Base
     {
         Toast.makeText(context, "File Clicked", Toast.LENGTH_SHORT).show()
     }
+}
 
+class FolderBrowserItemHolder(view: View): RecyclerView.ViewHolder(view)
+{
+    val item = view.folder_browser_item!!
+}
 
+interface OnItemClickListener {
+    fun onItemClicked(position: Int,  view: View?)
 }
