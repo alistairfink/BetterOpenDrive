@@ -1,16 +1,13 @@
 package com.alistairfink.betteropendrive
 
 import android.content.Context
-import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
 import com.alistairfink.betteropendrive.dataModels.FileModel
 import com.alistairfink.betteropendrive.dataModels.FolderModel
@@ -18,15 +15,18 @@ import com.alistairfink.betteropendrive.dataModels.FolderModelHelper
 import com.alistairfink.betteropendrive.dataModels.SubFolderModel
 import com.alistairfink.betteropendrive.helpers.InternalStorageClient
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
+import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.folder_browser_item.view.*
 import kotlinx.android.synthetic.main.fragment_folder_browser.*
 import java.text.SimpleDateFormat
 
 class FolderBrowserFragment : Fragment()
 {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private lateinit var listView: ListView
 
     companion object {
         fun newInstance(folderId: String): FolderBrowserFragment
@@ -88,136 +88,18 @@ class FolderBrowserFragment : Fragment()
     private fun renderViews(folder: FolderModel)
     {
         folder_title.text = folder.Name
-        folder_browser_layout.removeAllViews()
-        for (i in folder.Folders.indices)
-        {
-            var layout = createFolder(folder.Folders[i], this.context, i)
-            folder_browser_layout.addView(layout)
-
-            var layout2 = LinearLayout(this.context)
-            layout2.id =  i+100
-            layout2.setBackgroundColor(Color.parseColor("#000000"))
-            layout2.layoutParams = ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 5)
-            folder_browser_layout.addView(layout2)
+        var renderList: MutableList<Any> = mutableListOf()
+        renderList.addAll(folder.Folders)
+        renderList.addAll(folder.Files)
+        var adapter = FolderBrowserItemAdapter(this.context, renderList)
+        folder_browser_list.adapter = adapter
+        folder_browser_list.setOnItemClickListener { adapter, view, i, l ->
+            var folder = adapter.getItemAtPosition(i)
+            if (folder is SubFolderModel)
+            {
+                onClickFolder(folder)
+            }
         }
-        for (i in folder.Files.indices)
-        {
-            var layout = createFile(folder.Files[i], this.context, i)
-            folder_browser_layout.addView(layout)
-
-            var layout2 = LinearLayout(this.context)
-            layout2.id =  i+100
-            layout2.setBackgroundColor(Color.parseColor("#000000"))
-            layout2.layoutParams = ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 5)
-            folder_browser_layout.addView(layout2)
-        }
-    }
-
-    private fun createFolder(folder: SubFolderModel, context: Context, index: Int): LinearLayout
-    {
-        var layout = LinearLayout(context)
-        val height = folder_browser_header.height
-        var width = folder_browser_header.width
-        // Layout Stuff
-        layout.id = index
-        layout.setBackgroundColor(Color.parseColor("#FFFFFF"))
-        layout.layoutParams = ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height)
-        layout.orientation = LinearLayout.HORIZONTAL
-        layout.setOnClickListener {
-            onClickFolder(folder)
-        }
-        // Icon
-        var icon = ImageView(context)
-        icon.setImageResource(R.drawable.ic_folder_open)
-        icon.setPadding(20, 0, 20, 0)
-        icon.layoutParams = ViewGroup.LayoutParams(120, height)
-        layout.addView(icon)
-        // Title
-        var nameLayout = LinearLayout(context)
-        nameLayout.layoutParams = ViewGroup.LayoutParams(width-240, height)
-        nameLayout.orientation = LinearLayout.VERTICAL
-        var title = TextView(context)
-        title.text = folder.Name
-        title.textSize = 15f
-        title.gravity = Gravity.TOP
-        title.setPadding(0, 40, 0, 0)
-        title.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height-35)
-        nameLayout.addView(title)
-        var date = TextView(context)
-        date.text = "Modified: " + SimpleDateFormat("MMM dd yyyy").format(folder.DateModified)
-        date.textSize = 10f
-        date.gravity = Gravity.BOTTOM
-        date.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 35)
-        date.setPadding(0, 0, 0, 5)
-        nameLayout.addView(date)
-        layout.addView(nameLayout)
-        // Menu Icon
-        var menu = ImageView(context)
-        menu.setImageResource(R.drawable.ic_menu)
-        menu.setPadding(20, 0, 20, 0)
-        menu.layoutParams = ViewGroup.LayoutParams(120, height)
-        menu.setOnClickListener {
-            onClickFolderMenu(folder)
-        }
-        layout.addView(menu)
-        return layout
-    }
-
-    private fun createFile(file: FileModel, context: Context, index: Int): LinearLayout
-    {
-
-        var layout = LinearLayout(context)
-        val height = folder_browser_header.height
-        var width = folder_browser_header.width
-        // Layout Stuff
-        layout.id = index
-        layout.setBackgroundColor(Color.parseColor("#FFFFFF"))
-        layout.layoutParams = ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height)
-        layout.orientation = LinearLayout.HORIZONTAL
-        layout.setOnClickListener {
-            onClickFile(file)
-        }
-        // Icon
-        // TODO : Use Icons
-        var icon = ImageView(context)
-        icon.setImageResource(R.drawable.ic_file)
-        icon.setPadding(20, 0,20,0)
-        icon.layoutParams = ViewGroup.LayoutParams(120, height)
-        layout.addView(icon)
-        // Title
-        var nameLayout = LinearLayout(context)
-        nameLayout.layoutParams = ViewGroup.LayoutParams(width-240, height)
-        nameLayout.orientation = LinearLayout.VERTICAL
-        var title = TextView(context)
-        title.text = file.Name
-        title.textSize = 15f
-        title.gravity = Gravity.TOP
-        title.setPadding(0, 40, 0, 0)
-        title.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height-35)
-        nameLayout.addView(title)
-        var date = TextView(context)
-        date.text = "Modified: " + SimpleDateFormat("MMM dd yyyy").format(file.DateModified)
-        date.textSize = 10f
-        date.gravity = Gravity.BOTTOM
-        date.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 35)
-        date.setPadding(0, 0, 0, 5)
-        nameLayout.addView(date)
-        layout.addView(nameLayout)
-        // Menu Icon
-        var menu = ImageView(context)
-        menu.setImageResource(R.drawable.ic_menu)
-        menu.setPadding(20, 0, 20, 0)
-        menu.layoutParams = ViewGroup.LayoutParams(120, height)
-        menu.setOnClickListener {
-            onClickFileMenu(file)
-        }
-        layout.addView(menu)
-        return layout
-    }
-
-    private fun onClickFolderMenu(folder: SubFolderModel)
-    {
-
     }
 
     private fun onClickFolder(folder: SubFolderModel)
@@ -228,19 +110,61 @@ class FolderBrowserFragment : Fragment()
         fragmentTransaction.hide(this)
         fragmentTransaction.add(R.id.content_frame, fragment)
         fragmentTransaction.commit()
-      /*  val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.content_frame, fragment)
-        ft.commit()
-*/
+    }
+}
+
+class FolderBrowserItemAdapter(val context: Context, var data: List<Any>) : BaseAdapter()
+{
+    // TODO : Convert this to RecyclerView
+    private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+    override fun getView(i: Int, vire: View?, parent: ViewGroup?): View {
+        var listItem = getItem(i)
+        val item = inflater.inflate(R.layout.folder_browser_item, parent, false)
+
+        if (listItem is SubFolderModel) {
+            item.icon.setImageResource(R.drawable.ic_folder_open)
+            item.name_layout.name.text = listItem.Name
+            var date = "Modified: " + SimpleDateFormat("MMM dd yyyy").format(listItem.DateModified)
+            item.name_layout.date.text = date
+            item.menu.setOnClickListener {
+                onClickFolderMenu(listItem)
+            }
+        }
+        else if (listItem is FileModel)
+        {
+            Picasso.with(context).load(Uri.parse(listItem.Thumbnail)).into(item.icon)
+            item.name_layout.name.text = listItem.Name
+            var date = "Modified: " + SimpleDateFormat("MMM dd yyyy").format(listItem.DateModified)
+            item.name_layout.date.text = date
+            item.menu.setOnClickListener {
+                onClickFileMenu(listItem)
+            }
+        }
+        return item
     }
 
-    private fun onClickFileMenu(file: FileModel)
+    override fun getItem(i: Int): Any {
+        return data[i]
+    }
+
+    override fun getItemId(i: Int): Long {
+        return i.toLong()
+    }
+
+    override fun getCount(): Int {
+        return this.data.size
+    }
+
+    private fun onClickFolderMenu(folder: SubFolderModel)
     {
-
+        Toast.makeText(context, "Folder Clicked", Toast.LENGTH_SHORT).show()
     }
 
-    private fun onClickFile(file: FileModel)
+    private fun onClickFileMenu(folder: FileModel)
     {
-
+        Toast.makeText(context, "File Clicked", Toast.LENGTH_SHORT).show()
     }
+
+
 }
