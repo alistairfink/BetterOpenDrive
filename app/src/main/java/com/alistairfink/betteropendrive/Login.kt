@@ -205,6 +205,7 @@ class Login : Activity()
     }
 }
 
+// TODO : Move this in class
 data class Credentials
 (
         val UserName : String,
