@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
 import com.alistairfink.betteropendrive.dataModels.FileModel
 import com.alistairfink.betteropendrive.dataModels.FolderModel
@@ -223,7 +222,12 @@ class FolderBrowserFragment : Fragment()
 
     private fun onClickFolder(folder: SubFolderModel)
     {
+        var fragmentTransaction = fragmentManager.beginTransaction()
         var fragment = FolderBrowserFragment.newInstance(folder.FolderId)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.hide(this)
+        fragmentTransaction.add(R.id.content_frame, fragment)
+        fragmentTransaction.commit()
       /*  val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.content_frame, fragment)
         ft.commit()
