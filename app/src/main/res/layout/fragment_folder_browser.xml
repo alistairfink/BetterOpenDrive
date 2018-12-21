@@ -15,9 +15,9 @@
             android:layout_height="match_parent"
             android:textColor="@android:color/primary_text_dark"
             android:gravity="center_vertical"
-            android:textSize="30dp"
-            android:layout_marginLeft="10dp"
-            android:text="Loading..."/>
+            android:textSize="30sp"
+            android:layout_marginStart="10dp"
+            android:text="@string/loading"/>
     </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/folder_browser_list"
