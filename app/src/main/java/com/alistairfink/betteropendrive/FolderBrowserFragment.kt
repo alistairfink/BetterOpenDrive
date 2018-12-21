@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -27,6 +28,9 @@ import kotlinx.android.synthetic.main.folder_browser_item.view.*
 import kotlinx.android.synthetic.main.fragment_folder_browser.*
 import java.text.SimpleDateFormat
 import java.util.*
+import android.widget.Toast
+
+
 
 class FolderBrowserFragment : Fragment()
 {
@@ -165,7 +169,7 @@ class FolderBrowserFragment : Fragment()
                 var date = "Modified: " + SimpleDateFormat("MMM dd yyyy", Locale.getDefault()).format(listItem.DateModified)
                 holder.item.name_layout.date.text = date
                 holder.item.menu.setOnClickListener {
-                    onClickFileMenu(listItem)
+                    onClickFileMenu(listItem, holder)
                 }
                 holder.item.setOnClickListener { listener.invoke(listItem) }
             }
@@ -176,9 +180,16 @@ class FolderBrowserFragment : Fragment()
             Toast.makeText(context, "Folder Clicked " + folder.FolderId, Toast.LENGTH_SHORT).show()
         }
 
-        private fun onClickFileMenu(file: FileModel)
+        private fun onClickFileMenu(file: FileModel, holder: FolderBrowserItemHolder)
         {
-            Toast.makeText(context, "File Clicked " + file.FileId, Toast.LENGTH_SHORT).show()
+            var popup = PopupMenu(context, holder.item.menu)
+            popup.menuInflater.inflate(R.menu.folder_browser_popup_menu, popup.menu)
+            popup.setOnMenuItemClickListener { item ->
+                Toast.makeText(context, "You Clicked : " + item.title + " on " + file.Name, Toast.LENGTH_SHORT).show()
+                true
+            }
+
+            popup.show()
         }
     }
 

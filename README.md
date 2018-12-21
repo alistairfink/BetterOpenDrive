@@ -14,6 +14,10 @@
 * Resetting Password
 * Login Dialog
 * Loading Screen Before Login Dialog
+* Update Menu Options
+* Add Missing Views
+* Drag to Refresh folder browser
+* Refactor strings
 
 ## Maybe TODO:
 
