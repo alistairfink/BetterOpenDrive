@@ -3,6 +3,8 @@ package com.alistairfink.betteropendrive
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -97,52 +99,35 @@ class FolderBrowserFragment : Fragment()
         var renderList: MutableList<Any> = mutableListOf()
         renderList.addAll(folder.Folders)
         renderList.addAll(folder.Files)
-        var adapter = FolderBrowserItemAdapter(this.context, renderList)
+        var adapter = FolderBrowserItemAdapter(this.context, renderList) { _item -> onClickListener(_item) }
         folder_browser_list.layoutManager = LinearLayoutManager(this.context)
         folder_browser_list.adapter = adapter
-        folder_browser_list.addOnItemClickListener(object : OnItemClickListener
-        {
-            override fun onItemClicked(position: Int, view: View?)
-            {
-                var item = adapter.data[position]
-                if (item is SubFolderModel)
-                {
-                    onClickFolder(item)
-                }
-            }
-        })
     }
 
-    private fun onClickFolder(folder: SubFolderModel)
+    private fun onClickListener(item: Any)
     {
-        var fragmentTransaction = fragmentManager.beginTransaction()
-        var fragment = FolderBrowserFragment.newInstance(folder.FolderId)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.hide(this)
-        fragmentTransaction.add(R.id.content_frame, fragment)
-        fragmentTransaction.commit()
-    }
-
-    private fun RecyclerView.addOnItemClickListener(onClickListener: OnItemClickListener)
-    {
-        this.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener
+        val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (vibrator.hasVibrator())
         {
-            override fun onChildViewDetachedFromWindow(view: View?)
-            {
-                view?.setOnClickListener(null)
-            }
+            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+        }
 
-            override fun onChildViewAttachedToWindow(view: View?)
-            {
-                view?.setOnClickListener {
-                    val holder = getChildViewHolder(view)
-                    onClickListener.onItemClicked(holder.adapterPosition, view)
-                }
-            }
-        })
+        if (item is SubFolderModel) {
+            var fragmentTransaction = fragmentManager.beginTransaction()
+            var fragment = FolderBrowserFragment.newInstance(item.FolderId)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.hide(this)
+            fragmentTransaction.add(R.id.content_frame, fragment)
+            fragmentTransaction.commit()
+        }
+        else if (item is FileModel)
+        {
+            // TODO : Open file here
+            Toast.makeText(this.context, "You did a thing " + item.FileId, Toast.LENGTH_SHORT).show()
+        }
     }
 
-    class FolderBrowserItemAdapter(private val context: Context, var data: List<Any>) : RecyclerView.Adapter<FolderBrowserItemHolder>()
+    class FolderBrowserItemAdapter(private val context: Context, var data: List<Any>, private val listener: (Any) -> Unit) : RecyclerView.Adapter<FolderBrowserItemHolder>()
     {
         override fun getItemCount(): Int
         {
@@ -171,6 +156,7 @@ class FolderBrowserFragment : Fragment()
                 holder.item.menu.setOnClickListener {
                     onClickFolderMenu(listItem)
                 }
+                holder.item.setOnClickListener { listener.invoke(listItem) }
             }
             else if (listItem is FileModel)
             {
@@ -181,6 +167,7 @@ class FolderBrowserFragment : Fragment()
                 holder.item.menu.setOnClickListener {
                     onClickFileMenu(listItem)
                 }
+                holder.item.setOnClickListener { listener.invoke(listItem) }
             }
         }
 
@@ -198,10 +185,5 @@ class FolderBrowserFragment : Fragment()
     class FolderBrowserItemHolder(view: View) : RecyclerView.ViewHolder(view)
     {
         val item = view.folder_browser_item!!
-    }
-
-    interface OnItemClickListener
-    {
-        fun onItemClicked(position: Int, view: View?)
     }
 }
