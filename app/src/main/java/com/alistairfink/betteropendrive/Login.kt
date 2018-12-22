@@ -54,10 +54,13 @@ class Login : Activity()
 
     private fun checkSessionID(sessionID: String)
     {
+        // TODO: REMOVE THIS AFTER DONE TESTING
+        loginSuccess()
+
         var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
         var request = SessionExistsRequest(
                 SessionId = sessionID
-        );
+        )
         compositeDisposable.add(
                 repository.sessionExists(request)
                         .observeOn(AndroidSchedulers.mainThread())

@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -65,7 +64,8 @@ class FolderBrowserFragment : Fragment()
             renderViews(folder)
         }
 
-        getFolder(folderId)
+        // TODO : REMOVE THIS COMMENT WHEN DONE TESTING
+        // getFolder(folderId)
     }
 
     private fun getFolder(folderId: String)
@@ -81,11 +81,11 @@ class FolderBrowserFragment : Fragment()
                             var resultData =
                                     if (folderId == "0")
                                     {
-                                        FolderModelHelper.toDataModel(result, true)
+                                        FolderModelHelper.toFolderModel(result, true)
                                     }
                                     else
                                     {
-                                        FolderModelHelper.toDataModel(result)
+                                        FolderModelHelper.toFolderModel(result)
                                     }
 
                             var internalStorage = InternalStorageClient(this.context)

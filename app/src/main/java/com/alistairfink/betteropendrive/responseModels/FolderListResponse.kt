@@ -9,8 +9,8 @@ data class FolderListResponse
     @SerializedName("ParentFolderID") val ParentFolderId: String,
     @SerializedName("DirectFolderLink") val DirectFolderLink: String,
     @SerializedName("ResponseType") val ResponseType: Int,
-    @SerializedName("Folders") val Folders: List<Folders>,
-    @SerializedName("Files") val Files: List<Files>
+    @SerializedName("Folders") var Folders: MutableList<Folders>,
+    @SerializedName("Files") var Files: MutableList<Files>
 )
 
 data class Folders
