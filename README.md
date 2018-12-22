@@ -8,13 +8,12 @@
 * Uploading Files
 * Deleting Folders/Files
 * Bulk Downloading
-* Account Settings
-* Regular settings
+* Account Settings - View Created
+* Regular settings - View Created
 * Camera Uploads
 * Resetting Password
 * Login Dialog
 * Loading Screen Before Login Dialog
-* Update Menu Options
 * Add Missing Views
 * Drag to Refresh folder browser
 * Refactor strings

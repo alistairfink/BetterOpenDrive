@@ -131,6 +131,11 @@ class FolderBrowserFragment : Fragment()
         }
     }
 
+    fun test(view: View)
+    {
+        var test = "test"
+    }
+
     class FolderBrowserItemAdapter(private val context: Context, var data: List<Any>, private val listener: (Any) -> Unit) : RecyclerView.Adapter<FolderBrowserItemHolder>()
     {
         override fun getItemCount(): Int

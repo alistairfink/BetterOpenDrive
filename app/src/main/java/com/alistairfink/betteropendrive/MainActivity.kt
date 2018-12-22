@@ -94,12 +94,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_item_one ->
             {
-                fragment = TestFragment()
+                fragment = AccountSettingsFragment()
                 title = "Test"
             }
             R.id.nav_item_two ->
             {
-                fragment = OtherFragment()
+                fragment = SettingsFragment()
                 title = "Other"
             }
         }
