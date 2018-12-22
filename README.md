@@ -2,7 +2,7 @@
 
 ## TODO:
 
-* Options menu
+* Options menu: Added options. TODO: Implementation 
 * Opening Files
 * Creating Folders
 * Uploading Files
@@ -18,6 +18,7 @@
 * Add Missing Views
 * Drag to Refresh folder browser
 * Refactor strings
+* Unit Tests
 
 ## Maybe TODO:
 

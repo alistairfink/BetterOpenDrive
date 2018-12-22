@@ -185,8 +185,26 @@ class FolderBrowserFragment : Fragment()
             var popup = PopupMenu(context, holder.item.menu)
             popup.menuInflater.inflate(R.menu.folder_browser_popup_menu, popup.menu)
             popup.setOnMenuItemClickListener { item ->
-                Toast.makeText(context, "You Clicked : " + item.title + " on " + file.Name, Toast.LENGTH_SHORT).show()
-                true
+               when(item.itemId)
+               {
+                   R.id.folder_browser_popup_cut ->
+                   {
+
+                   }
+                   R.id.folder_browser_popup_copy ->
+                   {
+
+                   }
+                   R.id.folder_browser_popup_rename ->
+                   {
+
+                   }
+                   R.id.folder_browser_popup_delete ->
+                   {
+
+                   }
+               }
+               true
             }
 
             popup.show()
