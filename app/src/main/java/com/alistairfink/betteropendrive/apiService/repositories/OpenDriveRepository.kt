@@ -2,12 +2,12 @@ package com.alistairfink.betteropendrive.apiService.repositories
 
 import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.apiService.OpenDriveApiService
+import com.alistairfink.betteropendrive.requestModels.FileRenameRequest
 import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
-import com.alistairfink.betteropendrive.responseModels.FolderListResponse
-import com.alistairfink.betteropendrive.responseModels.SessionExistsResponse
-import com.alistairfink.betteropendrive.responseModels.SessionLoginResponse
-import com.alistairfink.betteropendrive.responseModels.UsersInfoResponse
+import com.alistairfink.betteropendrive.responseModels.*
 import io.reactivex.Observable
+import io.reactivex.Observer
+import okhttp3.ResponseBody
 
 object OpenDriveRepositoryProvider
 {
@@ -41,5 +41,17 @@ class OpenDriveRepository(var apiService: OpenDriveApiService)
             : Observable<FolderListResponse>
     {
         return apiService.folderList(SessionId = sessionId, FolderId = folderId)
+    }
+
+    fun fileRename(body: FileRenameRequest)
+            : Observable<FileRenameResponse>
+    {
+        return apiService.fileRename(body = body)
+    }
+
+    fun downloadFile(fileId: String)
+            : Observable<ResponseBody>
+    {
+        return apiService.downloadFile(FileId = fileId)
     }
 }

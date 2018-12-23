@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/one"
-        android:title="One" />
+        android:id="@+id/folder_browser_popup_cut"
+        android:title="Cut"/>
     <item
-        android:id="@+id/two"
-        android:title="Two"/>
+        android:id="@+id/folder_browser_popup_copy"
+        android:title="Copy"/>
     <item
-        android:id="@+id/three"
-        android:title="Three"/>
+        android:id="@+id/folder_browser_popup_rename"
+        android:title="Rename"/>
+    <item
+        android:id="@+id/folder_browser_popup_delete"
+        android:title="Delete"/>
 </menu>

@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v4.view.GravityCompat
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import android.support.v4.widget.DrawerLayout
@@ -15,7 +14,6 @@ import android.support.v7.widget.Toolbar
 import android.util.Base64
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import com.alistairfink.betteropendrive.helpers.ImageUtils.Companion.getCircularBitmap
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
@@ -37,9 +35,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         var avatar = sharedPreferences.getString(SharedPreferenceConstants.Avatar)
         var avatarByteArray = Base64.decode(avatar, Base64.DEFAULT)
         var bitmap = BitmapFactory.decodeByteArray(avatarByteArray, 0, avatarByteArray.size)
-        var testBitmap = getCircularBitmap(bitmap)
+        var circularBitmap = getCircularBitmap(bitmap)
 
-        nav_view.getHeaderView(0).nav_header_imageView.setImageBitmap(testBitmap)
+        nav_view.getHeaderView(0).nav_header_imageView.setImageBitmap(circularBitmap)
 
         val navigationView: NavigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
@@ -83,7 +81,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    fun displayView(viewId: Int) {
+    private fun displayView(viewId: Int) {
 
         var fragment: Fragment? = null
         var title = getString(R.string.app_name)
@@ -96,12 +94,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_item_one ->
             {
-                fragment = TestFragment()
+                fragment = AccountSettingsFragment()
                 title = "Test"
             }
             R.id.nav_item_two ->
             {
-                fragment = OtherFragment()
+                fragment = SettingsFragment()
                 title = "Other"
             }
         }

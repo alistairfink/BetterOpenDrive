@@ -1,40 +1,27 @@
 package com.alistairfink.betteropendrive.dataModels
 
+import com.alistairfink.betteropendrive.responseModels.Files
 import com.alistairfink.betteropendrive.responseModels.FolderListResponse
+import com.alistairfink.betteropendrive.responseModels.Folders
+import java.io.File
 import java.util.*
 
 class FolderModelHelper
 {
     companion object
     {
-        fun toDataModel(folderListResponse: FolderListResponse, isRoot: Boolean = false): FolderModel
+        fun toFolderModel(folderListResponse: FolderListResponse, isRoot: Boolean = false): FolderModel
         {
             var subFolders: MutableList<SubFolderModel> = mutableListOf()
             for (subFolder in folderListResponse.Folders)
             {
-                var folder = SubFolderModel(
-                        FolderId = subFolder.FolderId,
-                        Name = subFolder.Name,
-                        Link = subFolder.Link,
-                        DateCreated = Date(subFolder.DateCreated*1000L),
-                        DateModified = Date(subFolder.DateModified*1000L)
-                )
-                subFolders.add(folder)
+                subFolders.add(toSubFolderModel(subFolder))
             }
 
             var files: MutableList<FileModel> = mutableListOf()
             for (file in folderListResponse.Files)
             {
-                var fileModel = FileModel(
-                        FileId = file.FileId,
-                        Name = file.Name,
-                        Size = file.Size,
-                        DateModified =  Date(file.DateModified*1000L),
-                        FileHash = file.FileHash,
-                        Link = file.DownloadLink,
-                        Thumbnail = file.ThumbLink
-                )
-                files.add(fileModel)
+                files.add(toFileModel(file))
             }
 
             var parentFolderId = folderListResponse.ParentFolderId
@@ -50,6 +37,29 @@ class FolderModelHelper
                     ParentFolderId = parentFolderId,
                     Folders = subFolders,
                     Files = files
+            )
+        }
+        fun toSubFolderModel(subFolder: Folders): SubFolderModel
+        {
+             return SubFolderModel(
+                    FolderId = subFolder.FolderId,
+                    Name = subFolder.Name,
+                    Link = subFolder.Link,
+                    DateCreated = Date(subFolder.DateCreated*1000L),
+                    DateModified = Date(subFolder.DateModified*1000L)
+            )
+        }
+        fun toFileModel(file: Files): FileModel
+        {
+            return FileModel(
+                    FileId = file.FileId,
+                    Name = file.Name,
+                    Size = file.Size,
+                    DateModified =  Date(file.DateModified*1000L),
+                    FileHash = file.FileHash,
+                    Link = file.DownloadLink,
+                    Thumbnail = file.ThumbLink,
+                    Extension = file.Extension
             )
         }
     }
@@ -80,5 +90,6 @@ data class FileModel
         var DateModified: Date,
         var FileHash: String,
         var Link: String,
-        var Thumbnail: String
+        var Thumbnail: String,
+        var Extension: String
 )
