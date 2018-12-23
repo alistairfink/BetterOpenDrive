@@ -58,7 +58,8 @@ class FolderModelHelper
                     DateModified =  Date(file.DateModified*1000L),
                     FileHash = file.FileHash,
                     Link = file.DownloadLink,
-                    Thumbnail = file.ThumbLink
+                    Thumbnail = file.ThumbLink,
+                    Extension = file.Extension
             )
         }
     }
@@ -89,5 +90,6 @@ data class FileModel
         var DateModified: Date,
         var FileHash: String,
         var Link: String,
-        var Thumbnail: String
+        var Thumbnail: String,
+        var Extension: String
 )

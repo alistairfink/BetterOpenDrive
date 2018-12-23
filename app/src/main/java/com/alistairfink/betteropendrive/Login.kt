@@ -35,8 +35,8 @@ class Login : Activity()
     fun loginButton(view: View)
     {
         var request = SessionLoginRequest(
-            UserName = Login_Email.text.toString(),
-            Password = Login_Password.text.toString()
+                UserName = Login_Email.text.toString(),
+                Password = Login_Password.text.toString()
         )
         login(request)
     }
@@ -54,9 +54,11 @@ class Login : Activity()
 
     private fun checkSessionID(sessionID: String)
     {
+        /*
         // TODO: REMOVE THIS AFTER DONE TESTING
         loginSuccess()
-
+        return
+*/
         var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
         var request = SessionExistsRequest(
                 SessionId = sessionID
@@ -83,7 +85,7 @@ class Login : Activity()
     private fun newSessionID()
     {
         var credentials = getUnencryptedCreds()
-        if(credentials ==  null)
+        if (credentials == null)
         {
             var sharedPrefs = SharedPreferencesClient(this)
             sharedPrefs.removeKey(SharedPreferenceConstants.UserName)
@@ -107,8 +109,7 @@ class Login : Activity()
                 repository.sessionLogin(request)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
-                        .subscribe({
-                            result ->
+                        .subscribe({ result ->
                             android.os.Debug.waitForDebugger()
                             setTextFields(false)
                             var sessionId = result.SessionID
@@ -120,8 +121,7 @@ class Login : Activity()
                             setEncryptedCreds(Credentials(UserName = userName, Password = pass))
                             sharedPreferences.writeString(SharedPreferenceConstants.Name, name)
                             getProfileInfo(sessionId)
-                        },{
-                            error ->
+                        }, { error ->
                             android.os.Debug.waitForDebugger()
                             error.printStackTrace()
                         })
@@ -158,26 +158,26 @@ class Login : Activity()
         )
     }
 
-    private fun getUnencryptedCreds() : Credentials?
+    private fun getUnencryptedCreds(): Credentials?
     {
         var sharedPreferences = SharedPreferencesClient(this)
         var encryptedCredentials = sharedPreferences.getEncryptedCredentials()
         if (encryptedCredentials.UserName == null ||
-                encryptedCredentials.UserNameIV == null ||
-                encryptedCredentials.Password == null ||
-                encryptedCredentials.PasswordIV == null)
+            encryptedCredentials.UserNameIV == null ||
+            encryptedCredentials.Password == null ||
+            encryptedCredentials.PasswordIV == null)
         {
             return null
         }
         var unencryptedUser = EncryptionHelper.decrypt(EncryptionData(encryptedCredentials.UserName.toString(), encryptedCredentials.UserNameIV.toString()))
         var unencryptedPass = EncryptionHelper.decrypt(EncryptionData(encryptedCredentials.Password.toString(), encryptedCredentials.PasswordIV.toString()))
         return Credentials(
-                UserName =  unencryptedUser,
-                Password =  unencryptedPass
+                UserName = unencryptedUser,
+                Password = unencryptedPass
         )
     }
 
-    private fun setEncryptedCreds(creds : Credentials)
+    private fun setEncryptedCreds(creds: Credentials)
     {
         var sharedPreferences = SharedPreferencesClient(this)
         var encryptedUser = EncryptionHelper.encrypt(creds.UserName)
@@ -190,7 +190,7 @@ class Login : Activity()
         ))
     }
 
-    private fun setTextFields(value : Boolean)
+    private fun setTextFields(value: Boolean)
     {
         Login_Email.isFocusable = value
         Login_Email.isFocusableInTouchMode = value
@@ -206,11 +206,10 @@ class Login : Activity()
         startActivity(intent)
         finish()
     }
-}
 
-// TODO : Move this in class
-data class Credentials
-(
-        val UserName : String,
-        val Password : String
-)
+    data class Credentials
+    (
+            val UserName: String,
+            val Password: String
+    )
+}

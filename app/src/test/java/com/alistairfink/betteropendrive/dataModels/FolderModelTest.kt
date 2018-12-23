@@ -3,7 +3,7 @@ package com.alistairfink.betteropendrive.dataModels
 import com.alistairfink.betteropendrive.responseModels.Files
 import com.alistairfink.betteropendrive.responseModels.FolderListResponse
 import com.alistairfink.betteropendrive.responseModels.Folders
-import junit.framework.Assert
+import org.junit.Assert
 import org.junit.Test
 import java.util.*
 
@@ -105,5 +105,6 @@ class FolderModelTest {
         Assert.assertEquals(file.FileHash, fileModel.FileHash)
         Assert.assertEquals(file.DownloadLink, fileModel.Link)
         Assert.assertEquals(file.ThumbLink, fileModel.Thumbnail)
+        Assert.assertEquals(file.Extension, fileModel.Extension)
     }
 }

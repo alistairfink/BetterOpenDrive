@@ -33,6 +33,5 @@
         android:src="@drawable/ic_add"
         android:layout_margin="16dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="test"/>
+        android:layout_alignParentEnd="true"/>
 </RelativeLayout>

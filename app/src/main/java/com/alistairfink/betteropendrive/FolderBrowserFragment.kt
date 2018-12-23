@@ -8,6 +8,7 @@ import android.os.Vibrator
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +29,9 @@ import kotlinx.android.synthetic.main.fragment_folder_browser.*
 import java.text.SimpleDateFormat
 import java.util.*
 import android.widget.Toast
-
+import com.alistairfink.betteropendrive.helpers.OpenDriveFileApiClient
+import java.io.File
+import java.io.FileInputStream
 
 
 class FolderBrowserFragment : Fragment()
@@ -64,8 +67,11 @@ class FolderBrowserFragment : Fragment()
             renderViews(folder)
         }
 
+        folder_browser_fab.setOnClickListener { view ->
+            addButton(view)
+        }
         // TODO : REMOVE THIS COMMENT WHEN DONE TESTING
-        // getFolder(folderId)
+        getFolder(folderId)
     }
 
     private fun getFolder(folderId: String)
@@ -116,7 +122,8 @@ class FolderBrowserFragment : Fragment()
             vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
         }
 
-        if (item is SubFolderModel) {
+        if (item is SubFolderModel)
+        {
             var fragmentTransaction = fragmentManager.beginTransaction()
             var fragment = FolderBrowserFragment.newInstance(item.FolderId)
             fragmentTransaction.addToBackStack(null)
@@ -126,14 +133,39 @@ class FolderBrowserFragment : Fragment()
         }
         else if (item is FileModel)
         {
-            // TODO : Open file here
-            Toast.makeText(this.context, "You did a thing " + item.FileId, Toast.LENGTH_SHORT).show()
+            var fileClient = OpenDriveFileApiClient(this.context)
+            fileClient.download(item) { _file, _data -> fileOpen(_file, _data) }
         }
     }
 
-    fun test(view: View)
+    private fun fileOpen(file: FileModel, data: ByteArray)
     {
-        var test = "test"
+        var test = Base64.encodeToString(data, Base64.DEFAULT)
+        // val outputDir = context.cacheDir
+        // val outputFile = File.createTempFile(file.FileId, file.Extension, outputDir)
+        // TODO : Figure out how to open file
+    }
+
+    private fun addButton(view: View)
+    {
+        var popup = PopupMenu(this.context, view)
+        popup.menuInflater.inflate(R.menu.add_button_popup_menu, popup.menu)
+        popup.setOnMenuItemClickListener { item ->
+            when(item.itemId)
+            {
+                R.id.add_button_popup_add_file ->
+                {
+
+                }
+                R.id.add_button_popup_add_folder ->
+                {
+
+                }
+            }
+            true
+        }
+
+        popup.show()
     }
 
     class FolderBrowserItemAdapter(private val context: Context, var data: List<Any>, private val listener: (Any) -> Unit) : RecyclerView.Adapter<FolderBrowserItemHolder>()
