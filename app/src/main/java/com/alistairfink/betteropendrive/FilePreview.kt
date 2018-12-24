@@ -1,19 +1,12 @@
 package com.alistairfink.betteropendrive
 
-import android.support.v7.app.AppCompatActivity
-import android.webkit.WebView
 import android.os.Bundle
-import android.os.Environment
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.file_preview.*
-import kotlinx.android.synthetic.main.file_preview.view.*
-import android.content.Intent
-import android.view.MotionEvent
-
-
+import java.io.File
 
 
 class FilePreview: Fragment()
@@ -38,6 +31,9 @@ class FilePreview: Fragment()
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?)
     {
+        // TODO : Add Default "Not Supported" View
+        // TODO : Support PDFs
+        // TODO : Add File Options
         super.onViewCreated(view, savedInstanceState)
         var file = arguments.getString("file")
 
@@ -48,11 +44,6 @@ class FilePreview: Fragment()
         file_preview_webview.settings.displayZoomControls = true
         file_preview_webview.settings.builtInZoomControls = true
         file_preview_webview.loadUrl(path)
-
-        /*file_preview_webview.setOnTouchListener { v, event ->
-            // toggleControls()
-            true
-        }*/
     }
 
     fun toggleControls()
@@ -64,5 +55,13 @@ class FilePreview: Fragment()
         }
 
         file_preview_webview.settings.displayZoomControls = true
+    }
+
+    override fun onDestroy()
+    {
+        var filePath = arguments.getString("file")
+        var file = File(filePath)
+        file.delete()
+        super.onDestroy()
     }
 }
