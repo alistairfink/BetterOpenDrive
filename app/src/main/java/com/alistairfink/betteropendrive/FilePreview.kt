@@ -1,11 +1,16 @@
 package com.alistairfink.betteropendrive
 
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.*
 import kotlinx.android.synthetic.main.file_preview.*
+import kotlinx.android.synthetic.main.file_preview.view.*
 import java.io.File
 
 
@@ -31,18 +36,30 @@ class FilePreview: Fragment()
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?)
     {
-        // TODO : Add Default "Not Supported" View
-        // TODO : Support PDFs
+        // TODO : Add Default "Not Supported" View - HARD
         // TODO : Add File Options
         super.onViewCreated(view, savedInstanceState)
         var file = arguments.getString("file")
 
-        var path = "file://$file"
+        var path: String
+        if (file.substring(file.lastIndex-3) == ".pdf")
+        {
+            var actualFile = File(file)
+            var absolPath = actualFile.absolutePath
+            path = "file:///android_asset/pdfjs/web/viewer.html?file=file://${actualFile.absolutePath}#zoom=page-width"
+        }
+        else
+        {
+            path = "file://$file"
+        }
+        //file_preview_webview.webViewClient = test(this.context)
         file_preview_webview.settings.javaScriptEnabled = true
         file_preview_webview.settings.loadWithOverviewMode = true
         file_preview_webview.settings.useWideViewPort = true
         file_preview_webview.settings.displayZoomControls = true
         file_preview_webview.settings.builtInZoomControls = true
+        file_preview_webview.settings.allowFileAccessFromFileURLs = true
+        file_preview_webview.settings.allowFileAccess = true
         file_preview_webview.loadUrl(path)
     }
 

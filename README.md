@@ -3,7 +3,6 @@
 ## TODO:
 
 * Options menu: Added options. TODO: Implementation 
-* Opening Files
 * Creating Folders
 * Uploading Files
 * Deleting Folders/Files
