@@ -1,7 +1,6 @@
 package com.alistairfink.betteropendrive
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -12,13 +11,15 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.PopupMenu
+import android.widget.Toast
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
 import com.alistairfink.betteropendrive.dataModels.FileModel
 import com.alistairfink.betteropendrive.dataModels.FolderModel
 import com.alistairfink.betteropendrive.dataModels.FolderModelHelper
 import com.alistairfink.betteropendrive.dataModels.SubFolderModel
 import com.alistairfink.betteropendrive.helpers.InternalStorageClient
+import com.alistairfink.betteropendrive.helpers.OpenDriveFileApiClient
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -26,21 +27,15 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.folder_browser_item.view.*
 import kotlinx.android.synthetic.main.fragment_folder_browser.*
-import java.text.SimpleDateFormat
-import java.util.*
-import android.widget.Toast
-import com.alistairfink.betteropendrive.R.id.folder_browser_list
-import com.alistairfink.betteropendrive.R.id.folder_title
-import com.alistairfink.betteropendrive.helpers.OpenDriveFileApiClient
-import kotlinx.android.synthetic.main.file_preview.*
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class FolderBrowserFragment : Fragment()
 {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private lateinit var listView: ListView
 
     companion object
     {
@@ -255,6 +250,10 @@ class FolderBrowserFragment : Fragment()
 
                    }
                    R.id.folder_browser_popup_delete ->
+                   {
+
+                   }
+                   R.id.folder_browser_popup_properties ->
                    {
 
                    }

@@ -59,9 +59,4 @@ class OpenDriveFileApiClient(private val context: Context)
         }
         throw Exception("Bad Session ID")
     }
-
-    fun restore()
-    {
-
-    }
 }

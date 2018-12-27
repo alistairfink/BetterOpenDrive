@@ -14,8 +14,6 @@
 * Login Dialog
 * Loading Screen Before Login Dialog
 * Add Missing Views
-* Drag to Refresh folder browser
-* Refactor strings
 * Unit Tests
 
 ## Maybe TODO:

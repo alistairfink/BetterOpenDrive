@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group>
+    <group android:id="@+id/nav_group_fragments">
         <item android:id="@+id/nav_item_folder_browser"
             android:icon="@drawable/ic_folder"
             android:title="My OpenDrive" />
-        <item android:id="@+id/nav_item_one"
-            android:icon="@drawable/ic_folder"
-            android:title="Test" />
-        <item android:id="@+id/nav_item_two"
-            android:icon="@drawable/ic_folder"
-            android:title="Other" />
+        <item android:id="@+id/nav_item_account_settings"
+            android:icon="@drawable/ic_account_settings"
+            android:title="Account Settings" />
+        <item android:id="@+id/nav_item_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="Settings" />
+    </group>
+
+    <group android:id="@+id/nav_group_actions">
+        <item android:id="@+id/nav_action_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="Logout"/>
     </group>
 </menu>

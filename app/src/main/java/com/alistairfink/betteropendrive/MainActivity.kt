@@ -92,15 +92,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 fragment = FolderBrowserFragment.newInstance("0")
                 title = "My OpenDrive"
             }
-            R.id.nav_item_one ->
+            R.id.nav_item_account_settings ->
             {
                 fragment = AccountSettingsFragment()
                 title = "Test"
             }
-            R.id.nav_item_two ->
+            R.id.nav_item_settings ->
             {
                 fragment = SettingsFragment()
-                title = "Other"
+                title = "Settings"
+            }
+            // Actions
+            R.id.nav_action_logout ->
+            {
+                logout()
             }
         }
 
@@ -126,5 +131,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             super.onBackPressed()
         }
+    }
+
+    fun logout()
+    {
+        var test = ""
     }
 }
