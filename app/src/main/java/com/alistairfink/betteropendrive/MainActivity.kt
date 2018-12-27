@@ -1,12 +1,12 @@
 package com.alistairfink.betteropendrive
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
-import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -15,6 +15,7 @@ import android.util.Base64
 import android.view.MenuItem
 import android.view.View
 import com.alistairfink.betteropendrive.helpers.ImageUtils.Companion.getCircularBitmap
+import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 
@@ -133,8 +134,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    fun logout()
+    private fun logout()
     {
-        var test = ""
+        var sharedPreferences = SharedPreferencesClient(this)
+        sharedPreferences.removeCredentials()
+
+        var intent = Intent(this, Login::class.java)
+        startActivity(intent)
+        finish()
     }
 }

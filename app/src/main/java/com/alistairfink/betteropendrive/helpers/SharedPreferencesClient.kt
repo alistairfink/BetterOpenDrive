@@ -49,7 +49,7 @@ class SharedPreferencesClient(context: Context) {
 
     fun getString(key: String) : String?
     {
-        return _sharedPreferences.getString(key, null);
+        return _sharedPreferences.getString(key, null)
     }
 
     fun removeKey(key: String)
@@ -59,6 +59,15 @@ class SharedPreferencesClient(context: Context) {
             remove(key)
             apply()
         }
+    }
+
+    fun removeCredentials()
+    {
+        removeKey(SharedPreferenceConstants.SessionId)
+        removeKey(SharedPreferenceConstants.UserName)
+        removeKey(SharedPreferenceConstants.UserNameIV)
+        removeKey(SharedPreferenceConstants.Password)
+        removeKey(SharedPreferenceConstants.PasswordIV)
     }
     // TODO : Functions for retrieveing int and deleting.
 }
