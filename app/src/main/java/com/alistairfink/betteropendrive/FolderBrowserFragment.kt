@@ -68,8 +68,8 @@ class FolderBrowserFragment : Fragment()
             renderViews(folder)
         }
 
-        folder_browser_fab.setOnClickListener { view ->
-            addButton(view)
+        folder_browser_fab.setOnClickListener { v ->
+            addButton(v)
         }
         // TODO : REMOVE THIS COMMENT WHEN DONE TESTING
         getFolder(folderId)
@@ -141,7 +141,6 @@ class FolderBrowserFragment : Fragment()
 
     private fun fileOpen(file: FileModel, data: ByteArray)
     {
-       // var test = Base64.encodeToString(data, Base64.DEFAULT)
         val outputDir = this.context.externalCacheDir
         val outputFile = File.createTempFile(file.FileId, ".${file.Extension}", outputDir)
 
@@ -150,25 +149,12 @@ class FolderBrowserFragment : Fragment()
         fos.write(data)
         fos.close()
 
-        /*context.deleteFile(outputFile.path)
-        val path = Uri.parse("file:/" + outputFile.path)
-        val intent = Intent(Intent.ACTION_VIEW, path)
-        intent.type = "image/jpeg"//Intent.normalizeMimeType(file.Extension)
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        startActivity(Intent.createChooser(intent, "Select Application"))
-*/
-
         var fragmentTransaction = fragmentManager.beginTransaction()
         var fragment = FilePreview.newInstance(outputFile.path)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.hide(this)
         fragmentTransaction.add(R.id.content_frame, fragment)
         fragmentTransaction.commit()
-
-
-   /*     var intent = Intent(this.context, FilePreview::class.java)
-        intent.putExtra(FilePreview.file, "${file.FileId}.${file.Extension}")
-        startActivity(intent)*/
     }
 
     private fun addButton(view: View)

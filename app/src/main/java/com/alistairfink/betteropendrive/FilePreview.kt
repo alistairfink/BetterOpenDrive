@@ -1,16 +1,12 @@
 package com.alistairfink.betteropendrive
 
-import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.*
+import com.alistairfink.betteropendrive.helpers.CustomWebView
 import kotlinx.android.synthetic.main.file_preview.*
-import kotlinx.android.synthetic.main.file_preview.view.*
 import java.io.File
 
 
@@ -28,7 +24,6 @@ class FilePreview: Fragment()
         }
     }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanteState: Bundle?): View
     {
         return inflater.inflate(R.layout.file_preview, container, false)
@@ -36,7 +31,6 @@ class FilePreview: Fragment()
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?)
     {
-        // TODO : Add Default "Not Supported" View - HARD
         // TODO : Add File Options
         super.onViewCreated(view, savedInstanceState)
         var file = arguments.getString("file")
@@ -44,15 +38,13 @@ class FilePreview: Fragment()
         var path: String
         if (file.substring(file.lastIndex-3) == ".pdf")
         {
-            var actualFile = File(file)
-            var absolPath = actualFile.absolutePath
-            path = "file:///android_asset/pdfjs/web/viewer.html?file=file://${actualFile.absolutePath}#zoom=page-width"
+            path = "file:///android_asset/pdfjs/web/viewer.html?file=file://$file#zoom=page-width"
         }
         else
         {
             path = "file://$file"
         }
-        //file_preview_webview.webViewClient = test(this.context)
+        file_preview_webview.webViewClient = CustomWebView(this.context, file_preview_webview, unsupported_file_type)
         file_preview_webview.settings.javaScriptEnabled = true
         file_preview_webview.settings.loadWithOverviewMode = true
         file_preview_webview.settings.useWideViewPort = true

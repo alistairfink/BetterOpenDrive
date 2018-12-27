@@ -3,11 +3,31 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
+    android:background="@android:color/darker_gray"
     >
     <WebView
         android:id="@+id/file_preview_webview"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"></WebView>
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/unsupported_file_type"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"></WebView>
+        android:gravity="center"
+        android:background="@android:color/darker_gray">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_unsupported_file"
+            android:layout_gravity="center"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/unsupported_file_type_text"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"/>
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
