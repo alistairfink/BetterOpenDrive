@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_item_account_settings ->
             {
                 fragment = AccountSettingsFragment()
-                title = "Test"
+                title = "Account Settings"
             }
             R.id.nav_item_settings ->
             {
