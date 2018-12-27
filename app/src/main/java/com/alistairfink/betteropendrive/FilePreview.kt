@@ -39,13 +39,13 @@ class FilePreview: Fragment()
         if (file.substring(file.lastIndex-3) == ".pdf")
         {
             path = "file:///android_asset/pdfjs/web/viewer.html?file=file://$file#zoom=page-width"
+            file_preview_webview.settings.javaScriptEnabled = true
         }
         else
         {
             path = "file://$file"
         }
         file_preview_webview.webViewClient = CustomWebView(this.context, file_preview_webview, unsupported_file_type)
-        file_preview_webview.settings.javaScriptEnabled = true
         file_preview_webview.settings.loadWithOverviewMode = true
         file_preview_webview.settings.useWideViewPort = true
         file_preview_webview.settings.displayZoomControls = true

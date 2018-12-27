@@ -29,6 +29,8 @@ import kotlinx.android.synthetic.main.fragment_folder_browser.*
 import java.text.SimpleDateFormat
 import java.util.*
 import android.widget.Toast
+import com.alistairfink.betteropendrive.R.id.folder_browser_list
+import com.alistairfink.betteropendrive.R.id.folder_title
 import com.alistairfink.betteropendrive.helpers.OpenDriveFileApiClient
 import kotlinx.android.synthetic.main.file_preview.*
 import java.io.File
@@ -63,6 +65,9 @@ class FolderBrowserFragment : Fragment()
         var folderId = arguments.getString("folderId")
         var internalStorage = InternalStorageClient(this.context)
         var folder = internalStorage.readFolder(InternalStroageConstants.FolderPrefix + folderId)
+        folder_browser_refresh.setOnRefreshListener {
+            getFolder(arguments.getString("folderId"))
+        }
         if (folder != null)
         {
             renderViews(folder)
@@ -77,6 +82,7 @@ class FolderBrowserFragment : Fragment()
 
     private fun getFolder(folderId: String)
     {
+        folder_browser_refresh.isRefreshing = true
         var sharedPreferences = SharedPreferencesClient(this.context)
         var sessionId = sharedPreferences.getString(SharedPreferenceConstants.SessionId) as String
         var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
@@ -113,6 +119,7 @@ class FolderBrowserFragment : Fragment()
         var adapter = FolderBrowserItemAdapter(this.context, renderList) { _item -> onClickListener(_item) }
         folder_browser_list.layoutManager = LinearLayoutManager(this.context)
         folder_browser_list.adapter = adapter
+        folder_browser_refresh.isRefreshing = false
     }
 
     private fun onClickListener(item: Any)
