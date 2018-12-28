@@ -10,8 +10,8 @@
         android:id="@+id/folder_browser_popup_rename"
         android:title="Rename"/>
     <item
-        android:id="@+id/folder_browser_popup_delete"
-        android:title="Delete"/>
+        android:id="@+id/folder_browser_popup_trash"
+        android:title="Trash"/>
     <item
         android:id="@+id/folder_browser_popup_properties"
         android:title="Properties"/>

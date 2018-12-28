@@ -11,21 +11,20 @@
         android:background="@android:color/white"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/dialog_rename_title"
+            android:id="@+id/dialog_trash_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rename"
+            android:text="Are You Sure?"
             android:textColor="@android:color/black"
             android:layout_marginTop="16dp"
             android:layout_marginStart="8dp"
             android:textSize="25sp"/>
-        <EditText
-            android:id="@+id/dialog_rename_newTitle"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/dialog_trash_description"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginBottom="4dp"/>
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="5dp"
+            android:textSize="18sp" />
     </LinearLayout>
 </LinearLayout>

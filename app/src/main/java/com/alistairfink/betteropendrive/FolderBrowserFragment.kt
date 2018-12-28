@@ -6,9 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -21,7 +19,9 @@ import com.alistairfink.betteropendrive.dataModels.FileModel
 import com.alistairfink.betteropendrive.dataModels.FolderModel
 import com.alistairfink.betteropendrive.dataModels.FolderModelHelper
 import com.alistairfink.betteropendrive.dataModels.SubFolderModel
+import com.alistairfink.betteropendrive.dialogs.IDialogListener
 import com.alistairfink.betteropendrive.dialogs.RenameDialog
+import com.alistairfink.betteropendrive.dialogs.TrashDialog
 import com.alistairfink.betteropendrive.helpers.InternalStorageClient
 import com.alistairfink.betteropendrive.helpers.OpenDriveFileApiClient
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
@@ -37,7 +37,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class FolderBrowserFragment : Fragment(), RenameDialog.RenameDialogListener
+class FolderBrowserFragment : Fragment(), IDialogListener
 {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -231,9 +231,18 @@ class FolderBrowserFragment : Fragment(), RenameDialog.RenameDialogListener
                     dialogFragment.setRenameDialogListener(this)
                     dialogFragment.show(ft, "dialog")
                 }
-                R.id.folder_browser_popup_delete ->
+                R.id.folder_browser_popup_trash ->
                 {
-
+                    val ft = fragmentManager.beginTransaction()
+                    val prev = fragmentManager.findFragmentByTag("dialog")
+                    if (prev != null)
+                    {
+                        ft.remove(prev)
+                    }
+                    ft.addToBackStack(null)
+                    val dialogFragment = TrashDialog.newInstance(file.Name, file.FileId, true)
+                    dialogFragment.setTrashDialogListener(this)
+                    dialogFragment.show(ft, "dialog")
                 }
                 R.id.folder_browser_popup_properties ->
                 {

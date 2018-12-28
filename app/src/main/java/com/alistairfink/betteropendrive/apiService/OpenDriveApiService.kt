@@ -2,6 +2,7 @@ package com.alistairfink.betteropendrive.apiService
 
 import com.alistairfink.betteropendrive.Constants
 import com.alistairfink.betteropendrive.requestModels.FileRenameRequest
+import com.alistairfink.betteropendrive.requestModels.FileTrashRequest
 import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
 import com.alistairfink.betteropendrive.responseModels.*
@@ -44,6 +45,10 @@ interface OpenDriveApiService
     @GET("download/file.json/{fileId}")
     fun downloadFile(@Path("fileId") FileId: String)
             : Observable<ResponseBody>
+
+    @POST("file/trash.json")
+    fun trashFile(@Body body: FileTrashRequest)
+            : Observable<FileTrashResponse>
 
     companion object Factory
     {

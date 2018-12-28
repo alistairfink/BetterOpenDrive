@@ -5,20 +5,20 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
-import android.widget.EditText
 import android.widget.TextView
 import com.alistairfink.betteropendrive.R
 import com.alistairfink.betteropendrive.helpers.OpenDriveFileApiClient
 
-class RenameDialog: DialogFragment()
+class TrashDialog: DialogFragment()
 {
-    private lateinit var renameDialogListener: IDialogListener
+
+    private lateinit var trashDialogListener: IDialogListener
 
     companion object
     {
-        fun newInstance(itemName: String, id: String, isFile: Boolean): RenameDialog
+        fun newInstance(itemName: String, id: String, isFile: Boolean): TrashDialog
         {
-            var fragment = RenameDialog()
+            var fragment = TrashDialog()
             var args = Bundle()
             fragment.arguments = args
             args.putString("itemName", itemName)
@@ -28,36 +28,36 @@ class RenameDialog: DialogFragment()
         }
     }
 
-    fun setRenameDialogListener(listener: IDialogListener)
+    fun setTrashDialogListener(listener: IDialogListener)
     {
-        renameDialogListener = listener
+        trashDialogListener = listener
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog
     {
         val builder = AlertDialog.Builder(activity)
         val inflater = activity.layoutInflater
-        val view = inflater.inflate(R.layout.dialog_rename, null)
+        val view = inflater.inflate(R.layout.dialog_trash, null)
 
         var isFile = arguments.getBoolean("isFile")
-        val title = view.findViewById(R.id.dialog_rename_title) as TextView
+        val title = view.findViewById(R.id.dialog_trash_title) as TextView
         if (isFile)
         {
-            title.text = "Rename File"
+            title.text = "Send File to Trash?"
         }
         else
         {
-            title.text = "Rename Folder"
+            title.text = "Send Folder to Trash?"
         }
 
+        //
         var itemName = arguments.getString("itemName")
-        var newTitle = view.findViewById(R.id.dialog_rename_newTitle) as EditText
-        newTitle.setText(itemName)
+        var newTitle = view.findViewById(R.id.dialog_trash_description) as TextView
+        newTitle.text = "Are you sure you want to send $itemName to the trash? This action can be undone later."
 
         builder
-                .setPositiveButton("RENAME") { dialog, _ ->
-                    var newName = newTitle.text
-                    onClickConfirm(dialog, newName.toString())
+                .setPositiveButton("CONFIRM") { dialog, _ ->
+                    onClickConfirm(dialog)
                 }
                 .setNegativeButton("CANCEL") { dialog, _ ->
                     dialog.cancel()
@@ -67,21 +67,21 @@ class RenameDialog: DialogFragment()
         return builder.create()
     }
 
-    private fun onClickConfirm(dialog: DialogInterface, newName: String)
+    private fun onClickConfirm(dialog: DialogInterface)
     {
-        //var newTitle = (view?.findViewById(R.id.dialog_rename_newTitle) as EditText).text
         var id = arguments.getString("id")
         var isFile = arguments.getBoolean("isFile")
         if (isFile)
         {
             var openDriveFileClient = OpenDriveFileApiClient(this.context)
-            openDriveFileClient.rename(newName, id)
+            openDriveFileClient.trash(id)
             dialog.dismiss()
         }
         else
         {
 
         }
-        renameDialogListener.onSuccess(dialog)
+        trashDialogListener.onSuccess(dialog)
     }
+
 }
