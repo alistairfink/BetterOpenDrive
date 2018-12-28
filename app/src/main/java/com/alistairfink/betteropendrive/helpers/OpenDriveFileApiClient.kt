@@ -33,60 +33,52 @@ class OpenDriveFileApiClient(private val context: Context)
     fun trash(fileId: String)
     {
         var sharedPreferences = SharedPreferencesClient(context)
-        var sessionId = sharedPreferences.getString(SharedPreferenceConstants.SessionId)
-        if (sessionId != null)
-        {
-            var fileTrashRequest = FileTrashRequest(
-                    SessionId = sessionId,
-                    FileId = fileId
-            )
-            var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
-            compositeDisposable.add(
-                    repository.trashFile(fileTrashRequest)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({ result ->
-                                if (result.DirUpdateTime <= 0)
-                                {
-                                    throw Exception("This shits fucked")
-                                }
-                            }, { error ->
-                                error.printStackTrace()
-                            })
-            )
-            return
-        }
-        throw Exception("Bad Session ID")
+        var sessionId = sharedPreferences.getString(SharedPreferenceConstants.SessionId)!!
+        var fileTrashRequest = FileTrashRequest(
+                SessionId = sessionId,
+                FileId = fileId
+        )
+        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
+        compositeDisposable.add(
+                repository.trashFile(fileTrashRequest)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            if (result.DirUpdateTime <= 0)
+                            {
+                                throw Exception("This shits fucked")
+                            }
+                        }, { error ->
+                            error.printStackTrace()
+                        })
+        )
+        return
     }
 
     fun rename(newName: String, fileId: String)
     {
         var sharedPreferences = SharedPreferencesClient(context)
-        var sessionId = sharedPreferences.getString(SharedPreferenceConstants.SessionId)
-        if (sessionId != null)
-        {
-            var fileRenameRequest = FileRenameRequest(
-                    SessionId = sessionId,
-                    NewName = newName,
-                    FileId = fileId
-            )
-            var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
-            compositeDisposable.add(
-                    repository.fileRename(fileRenameRequest)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({ result ->
-                                if (newName != result.Name)
-                                {
-                                    throw Exception("Sum Ting Wong")
-                                }
-                            }, { error ->
-                                error.printStackTrace()
-                            })
-            )
-            return
-        }
-        throw Exception("Bad Session ID")
+        var sessionId = sharedPreferences.getString(SharedPreferenceConstants.SessionId)!!
+        var fileRenameRequest = FileRenameRequest(
+                SessionId = sessionId,
+                NewName = newName,
+                FileId = fileId
+        )
+        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
+        compositeDisposable.add(
+                repository.fileRename(fileRenameRequest)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            if (newName != result.Name)
+                            {
+                                throw Exception("Sum Ting Wong")
+                            }
+                        }, { error ->
+                            error.printStackTrace()
+                        })
+        )
+        return
     }
 
     fun move(fileId: String, folderId: String)
