@@ -14,6 +14,10 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+
+
 
 interface OpenDriveApiService
 {
@@ -45,7 +49,13 @@ interface OpenDriveApiService
     {
         fun create() : OpenDriveApiService
         {
+            // TODO : REMOVE LOGGING FOR PROD
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.level = HttpLoggingInterceptor.Level.BODY
+            val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
             var retrofit = Retrofit.Builder()
+                    .client(client)
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(Constants.OpenDriveBaseURL)

@@ -23,7 +23,6 @@ class OpenDriveFileApiClient(private val context: Context)
                         .subscribe({ result ->
                             callBack.invoke(file, result.bytes())
                         }, { error ->
-                            android.os.Debug.waitForDebugger()
                             error.printStackTrace()
                         })
         )
@@ -40,7 +39,11 @@ class OpenDriveFileApiClient(private val context: Context)
         var sessionId = sharedPreferences.getString(SharedPreferenceConstants.SessionId)
         if (sessionId != null)
         {
-            var fileRenameRequest = FileRenameRequest(sessionId, newName, fileId)
+            var fileRenameRequest = FileRenameRequest(
+                    SessionId = sessionId,
+                    NewName = newName,
+                    FileId = fileId
+            )
             var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
             compositeDisposable.add(
                     repository.fileRename(fileRenameRequest)
@@ -49,13 +52,13 @@ class OpenDriveFileApiClient(private val context: Context)
                             .subscribe({ result ->
                                 if (newName != result.Name)
                                 {
-                                    throw Exception("Some Ting Wong")
+                                    throw Exception("Sum Ting Wong")
                                 }
                             }, { error ->
-                                android.os.Debug.waitForDebugger()
                                 error.printStackTrace()
                             })
             )
+            return
         }
         throw Exception("Bad Session ID")
     }

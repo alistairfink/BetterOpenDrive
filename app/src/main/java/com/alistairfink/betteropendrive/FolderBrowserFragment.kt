@@ -1,11 +1,14 @@
 package com.alistairfink.betteropendrive
 
 import android.content.Context
+import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -18,6 +21,7 @@ import com.alistairfink.betteropendrive.dataModels.FileModel
 import com.alistairfink.betteropendrive.dataModels.FolderModel
 import com.alistairfink.betteropendrive.dataModels.FolderModelHelper
 import com.alistairfink.betteropendrive.dataModels.SubFolderModel
+import com.alistairfink.betteropendrive.dialogs.RenameDialog
 import com.alistairfink.betteropendrive.helpers.InternalStorageClient
 import com.alistairfink.betteropendrive.helpers.OpenDriveFileApiClient
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
@@ -33,7 +37,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class FolderBrowserFragment : Fragment()
+class FolderBrowserFragment : Fragment(), RenameDialog.RenameDialogListener
 {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -111,7 +115,7 @@ class FolderBrowserFragment : Fragment()
         var renderList: MutableList<Any> = mutableListOf()
         renderList.addAll(folder.Folders)
         renderList.addAll(folder.Files)
-        var adapter = FolderBrowserItemAdapter(this.context, renderList) { _item -> onClickListener(_item) }
+        var adapter = FolderBrowserItemAdapter(this.context, renderList, { _item -> onClickListener(_item)}, { _item, _view -> onClickMenuListener(_item, _view)})
         folder_browser_list.layoutManager = LinearLayoutManager(this.context)
         folder_browser_list.adapter = adapter
         folder_browser_refresh.isRefreshing = false
@@ -181,7 +185,79 @@ class FolderBrowserFragment : Fragment()
         popup.show()
     }
 
-    class FolderBrowserItemAdapter(private val context: Context, var data: List<Any>, private val listener: (Any) -> Unit) : RecyclerView.Adapter<FolderBrowserItemHolder>()
+    private fun onClickMenuListener(item: Any, view: View)
+    {
+        if (item is SubFolderModel)
+        {
+            onClickFolderMenu(item, view)
+        }
+        else if (item is FileModel)
+        {
+            onClickFileMenu(item, view)
+        }
+    }
+
+
+    private fun onClickFolderMenu(folder: SubFolderModel, view: View)
+    {
+        Toast.makeText(this.context, "Folder Clicked " + folder.FolderId, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun onClickFileMenu(file: FileModel, view: View)
+    {
+        var popup = PopupMenu(this.context, view.menu)
+        popup.menuInflater.inflate(R.menu.folder_browser_popup_menu, popup.menu)
+        popup.setOnMenuItemClickListener { item ->
+            when(item.itemId)
+            {
+                R.id.folder_browser_popup_cut ->
+                {
+
+                }
+                R.id.folder_browser_popup_copy ->
+                {
+
+                }
+                R.id.folder_browser_popup_rename ->
+                {
+                    val ft = fragmentManager.beginTransaction()
+                    val prev = fragmentManager.findFragmentByTag("dialog")
+                    if (prev != null)
+                    {
+                        ft.remove(prev)
+                    }
+                    ft.addToBackStack(null)
+                    val dialogFragment = RenameDialog.newInstance(file.Name, file.FileId, true)
+                    dialogFragment.setRenameDialogListener(this)
+                    dialogFragment.show(ft, "dialog")
+                }
+                R.id.folder_browser_popup_delete ->
+                {
+
+                }
+                R.id.folder_browser_popup_properties ->
+                {
+
+                }
+            }
+            true
+        }
+
+        popup.show()
+    }
+
+    override fun onSuccess(dialog: DialogInterface)
+    {
+        var folderId = arguments.getString("folderId")
+        getFolder(folderId)
+    }
+
+    class FolderBrowserItemAdapter(
+            private val context: Context,
+            var data: List<Any>,
+            private val clickListener: (Any) -> Unit,
+            private val menuListener: (Any, View) -> Unit
+    ) : RecyclerView.Adapter<FolderBrowserItemHolder>()
     {
         override fun getItemCount(): Int
         {
@@ -207,10 +283,6 @@ class FolderBrowserFragment : Fragment()
                 holder.item.name_layout.name.text = listItem.Name
                 var date = "Modified: " + SimpleDateFormat("MMM dd yyyy", Locale.getDefault()).format(listItem.DateModified)
                 holder.item.name_layout.date.text = date
-                holder.item.menu.setOnClickListener {
-                    onClickFolderMenu(listItem)
-                }
-                holder.item.setOnClickListener { listener.invoke(listItem) }
             }
             else if (listItem is FileModel)
             {
@@ -218,50 +290,9 @@ class FolderBrowserFragment : Fragment()
                 holder.item.name_layout.name.text = listItem.Name
                 var date = "Modified: " + SimpleDateFormat("MMM dd yyyy", Locale.getDefault()).format(listItem.DateModified)
                 holder.item.name_layout.date.text = date
-                holder.item.menu.setOnClickListener {
-                    onClickFileMenu(listItem, holder)
-                }
-                holder.item.setOnClickListener { listener.invoke(listItem) }
             }
-        }
-
-        private fun onClickFolderMenu(folder: SubFolderModel)
-        {
-            Toast.makeText(context, "Folder Clicked " + folder.FolderId, Toast.LENGTH_SHORT).show()
-        }
-
-        private fun onClickFileMenu(file: FileModel, holder: FolderBrowserItemHolder)
-        {
-            var popup = PopupMenu(context, holder.item.menu)
-            popup.menuInflater.inflate(R.menu.folder_browser_popup_menu, popup.menu)
-            popup.setOnMenuItemClickListener { item ->
-               when(item.itemId)
-               {
-                   R.id.folder_browser_popup_cut ->
-                   {
-
-                   }
-                   R.id.folder_browser_popup_copy ->
-                   {
-
-                   }
-                   R.id.folder_browser_popup_rename ->
-                   {
-
-                   }
-                   R.id.folder_browser_popup_delete ->
-                   {
-
-                   }
-                   R.id.folder_browser_popup_properties ->
-                   {
-
-                   }
-               }
-               true
-            }
-
-            popup.show()
+            holder.item.menu.setOnClickListener { menuListener.invoke(listItem, holder.item) }
+            holder.item.setOnClickListener { clickListener.invoke(listItem) }
         }
     }
 

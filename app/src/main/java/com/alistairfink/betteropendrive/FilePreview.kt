@@ -31,7 +31,6 @@ class FilePreview: Fragment()
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?)
     {
-        // TODO : Add File Options
         super.onViewCreated(view, savedInstanceState)
         var file = arguments.getString("file")
 
