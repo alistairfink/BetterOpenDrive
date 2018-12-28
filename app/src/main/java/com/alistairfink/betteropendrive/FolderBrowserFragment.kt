@@ -200,6 +200,11 @@ class FolderBrowserFragment : Fragment(), IDialogListener
 
     private fun onClickFolderMenu(folder: SubFolderModel, view: View)
     {
+        var newFileName = "animated.gif"
+        var folderId = "123"
+        var openDriveFileApiClient = OpenDriveFileApiClient(this.context)
+        openDriveFileApiClient.rename(newFileName, folderId)
+
         Toast.makeText(this.context, "Folder Clicked " + folder.FolderId, Toast.LENGTH_SHORT).show()
     }
 

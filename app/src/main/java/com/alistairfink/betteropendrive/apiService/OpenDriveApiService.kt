@@ -1,10 +1,7 @@
 package com.alistairfink.betteropendrive.apiService
 
 import com.alistairfink.betteropendrive.Constants
-import com.alistairfink.betteropendrive.requestModels.FileRenameRequest
-import com.alistairfink.betteropendrive.requestModels.FileTrashRequest
-import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
-import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
+import com.alistairfink.betteropendrive.requestModels.*
 import com.alistairfink.betteropendrive.responseModels.*
 import io.reactivex.Observable
 import okhttp3.ResponseBody
@@ -49,6 +46,10 @@ interface OpenDriveApiService
     @POST("file/trash.json")
     fun trashFile(@Body body: FileTrashRequest)
             : Observable<FileTrashResponse>
+
+    @POST("file/move_copy.json")
+    fun moveCopyFile(@Body body: FileMoveCopyRequest)
+            : Observable<FileMoveCopyResponse>
 
     companion object Factory
     {

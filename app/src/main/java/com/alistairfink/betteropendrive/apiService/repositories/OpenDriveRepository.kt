@@ -1,10 +1,7 @@
 package com.alistairfink.betteropendrive.apiService.repositories
 
-import com.alistairfink.betteropendrive.requestModels.SessionExistsRequest
 import com.alistairfink.betteropendrive.apiService.OpenDriveApiService
-import com.alistairfink.betteropendrive.requestModels.FileRenameRequest
-import com.alistairfink.betteropendrive.requestModels.FileTrashRequest
-import com.alistairfink.betteropendrive.requestModels.SessionLoginRequest
+import com.alistairfink.betteropendrive.requestModels.*
 import com.alistairfink.betteropendrive.responseModels.*
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -60,5 +57,11 @@ class OpenDriveRepository(var apiService: OpenDriveApiService)
             : Observable<FileTrashResponse>
     {
         return apiService.trashFile(body = body)
+    }
+
+    fun moveCopyFile(body: FileMoveCopyRequest)
+            : Observable<FileMoveCopyResponse>
+    {
+        return apiService.moveCopyFile(body = body)
     }
 }
