@@ -7,6 +7,6 @@ data class FileMoveCopyRequest
         @SerializedName("session_id") var SessionId: String,
         @SerializedName("src_file_id") var SourceFileId: String,
         @SerializedName("dst_folder_id") var DestinationFolderId: String,
-        @SerializedName("move") var Move: Boolean,
-        @SerializedName("overwrite_if_exists") var OverWriteIfExists: Boolean
+        @SerializedName("move") var Move: String,
+        @SerializedName("overwrite_if_exists") var OverWriteIfExists: String
 )

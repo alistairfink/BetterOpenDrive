@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.alistairfink.betteropendrive.InternalStroageConstants
@@ -36,7 +37,8 @@ class CopyMoveDialog: DialogFragment()
     private lateinit var copyMoveDialogListener: IDialogListener
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private lateinit var dialog: AlertDialog
-    private lateinit var parentFolderId: String
+    private lateinit var currentFolderId: String
+    private lateinit var currentFolder: FolderModel
 
     companion object
     {
@@ -72,44 +74,75 @@ class CopyMoveDialog: DialogFragment()
         val title = view.findViewById(R.id.dialog_copy_move_title) as TextView
         title.text = copyMoveText
 
+        var confirmButton = view.findViewById(R.id.dialog_copy_move_confirm) as Button
+        confirmButton.setOnClickListener {
+            onClickConfirm()
+        }
+        var cancelButton = view.findViewById(R.id.dialog_copy_move_cancel) as Button
+        cancelButton.setOnClickListener {
+            onClickCancel()
+        }
+
         val copyMoveList = view.findViewById(R.id.copy_move_list) as RecyclerView
         val parentIcon = view.findViewById(R.id.parent_folder_icon) as ImageView
         getFolder("0", copyMoveList, parentIcon)
-
-        builder
-                .setPositiveButton(copyMoveText) { dialog, _ ->
-                    //var newName = newTitle.text
-                    onClickConfirm(dialog)
-                }
-                .setNegativeButton("CANCEL") { dialog, _ ->
-                    dialog.cancel()
-                }
 
         builder.setView(view)
         dialog =  builder.create()
         return dialog
     }
 
-    private fun onClickConfirm(dialog: DialogInterface)
+    private fun onClickConfirm()
     {
         var isFile = arguments.getBoolean("isFile")
-        var copy = arguments.getBoolean("copy")
+        var name = arguments.getString("itemName")
         if (isFile)
         {
-            var openDriveFileClient = OpenDriveFileApiClient(this.context)
-            // openDriveFileClient.rename(newName)
-            dialog.dismiss()
+            if(currentFolder.Files.any { a -> a.Name == name} )
+            {
+                // TODO : OPEN DIALOG
+                //val ft = fragmentManager.beginTransaction()
+                //ft.addToBackStack(null)
+               // val dialogFragment = TrashDialog.newInstance(file.Name, file.FileId, true)
+                //dialogFragment.setTrashDialogListener(this)
+                //dialogFragment.show(ft, "dialog")
+            }
+            else
+            {
+                actionFile()
+            }
         }
         else
         {
 
         }
+    }
+
+    fun onClickCancel()
+    {
+        dialog.cancel()
+    }
+
+    private fun actionFile()
+    {
+        var copy = arguments.getBoolean("copy")
+        var id = arguments.getString("id")
+        var openDriveFileClient = OpenDriveFileApiClient(this.context)
+        if (copy)
+        {
+            openDriveFileClient.copy(id, currentFolderId)
+        }
+        else
+        {
+            openDriveFileClient.move(id, currentFolderId)
+        }
+        dialog.dismiss()
         copyMoveDialogListener.onSuccess(dialog)
     }
 
-
     private fun getFolder(folderId: String, copyMoveList: RecyclerView, parentIcon: ImageView)
     {
+        currentFolderId = folderId
         var internalStorage = InternalStorageClient(this.context)
         var folder = internalStorage.readFolder(InternalStroageConstants.FolderPrefix + folderId)
         if (folder != null)
@@ -147,13 +180,13 @@ class CopyMoveDialog: DialogFragment()
 
     private fun renderViews(folder: FolderModel, copyMoveList: RecyclerView, parentIcon: ImageView)
     {
+        currentFolder = folder
         var renderList: MutableList<Any> = mutableListOf()
-        // TODO : Refactor this so it doesn't happen for parnet folder
+        // TODO : Refactor this so it doesn't happen for parent folder
         parentIcon.setOnClickListener {
             var copyMoveList = dialog.findViewById<RecyclerView>(R.id.copy_move_list)!!
             getFolder(folder.ParentFolderId!!, copyMoveList, parentIcon)
         }
-        parentFolderId = folder.ParentFolderId!!
 
         renderList.addAll(folder.Folders)
         renderList.addAll(folder.Files)

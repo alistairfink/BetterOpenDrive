@@ -89,8 +89,8 @@ class OpenDriveFileApiClient(private val context: Context)
                 SessionId = sessionId,
                 SourceFileId = fileId,
                 DestinationFolderId = folderId,
-                Move = true,
-                OverWriteIfExists = true
+                Move = "true",
+                OverWriteIfExists = "true"
         )
         moveCopy(fileMoveRequest)
     }
@@ -103,8 +103,8 @@ class OpenDriveFileApiClient(private val context: Context)
                 SessionId = sessionId,
                 SourceFileId = fileId,
                 DestinationFolderId = folderId,
-                Move = false,
-                OverWriteIfExists = true
+                Move = "false",
+                OverWriteIfExists = "true"
         )
         moveCopy(fileCopyRequest)
     }
