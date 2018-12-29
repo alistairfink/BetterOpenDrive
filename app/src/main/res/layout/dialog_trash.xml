@@ -11,7 +11,7 @@
         android:background="@android:color/white"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/dialog_trash_title"
+            android:id="@+id/dialog_copy_move_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Are You Sure?"

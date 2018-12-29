@@ -69,7 +69,6 @@ class RenameDialog: DialogFragment()
 
     private fun onClickConfirm(dialog: DialogInterface, newName: String)
     {
-        //var newTitle = (view?.findViewById(R.id.dialog_rename_newTitle) as EditText).text
         var id = arguments.getString("id")
         var isFile = arguments.getBoolean("isFile")
         if (isFile)

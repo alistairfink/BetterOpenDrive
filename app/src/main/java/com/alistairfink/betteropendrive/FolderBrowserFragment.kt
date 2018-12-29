@@ -19,6 +19,7 @@ import com.alistairfink.betteropendrive.dataModels.FileModel
 import com.alistairfink.betteropendrive.dataModels.FolderModel
 import com.alistairfink.betteropendrive.dataModels.FolderModelHelper
 import com.alistairfink.betteropendrive.dataModels.SubFolderModel
+import com.alistairfink.betteropendrive.dialogs.CopyMoveDialog
 import com.alistairfink.betteropendrive.dialogs.IDialogListener
 import com.alistairfink.betteropendrive.dialogs.RenameDialog
 import com.alistairfink.betteropendrive.dialogs.TrashDialog
@@ -200,11 +201,6 @@ class FolderBrowserFragment : Fragment(), IDialogListener
 
     private fun onClickFolderMenu(folder: SubFolderModel, view: View)
     {
-        var newFileName = "animated.gif"
-        var folderId = "123"
-        var openDriveFileApiClient = OpenDriveFileApiClient(this.context)
-        openDriveFileApiClient.rename(newFileName, folderId)
-
         Toast.makeText(this.context, "Folder Clicked " + folder.FolderId, Toast.LENGTH_SHORT).show()
     }
 
@@ -217,11 +213,11 @@ class FolderBrowserFragment : Fragment(), IDialogListener
             {
                 R.id.folder_browser_popup_cut ->
                 {
-
+                    copyMove(file, false)
                 }
                 R.id.folder_browser_popup_copy ->
                 {
-
+                    copyMove(file, true)
                 }
                 R.id.folder_browser_popup_rename ->
                 {
@@ -258,6 +254,20 @@ class FolderBrowserFragment : Fragment(), IDialogListener
         }
 
         popup.show()
+    }
+
+    private fun copyMove(file: FileModel, copy: Boolean)
+    {
+        val ft = fragmentManager.beginTransaction()
+        val prev = fragmentManager.findFragmentByTag("dialog")
+        if (prev != null)
+        {
+            ft.remove(prev)
+        }
+        ft.addToBackStack(null)
+        val dialogFragment =  CopyMoveDialog.newInstance(file.Name, file.FileId, true, copy)
+        dialogFragment.setCopyMoveDialogListener(this)
+        dialogFragment.show(ft, "dialog")
     }
 
     override fun onSuccess(dialog: DialogInterface)

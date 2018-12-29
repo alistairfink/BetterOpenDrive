@@ -40,7 +40,7 @@ class TrashDialog: DialogFragment()
         val view = inflater.inflate(R.layout.dialog_trash, null)
 
         var isFile = arguments.getBoolean("isFile")
-        val title = view.findViewById(R.id.dialog_trash_title) as TextView
+        val title = view.findViewById(R.id.dialog_copy_move_title) as TextView
         if (isFile)
         {
             title.text = "Send File to Trash?"
