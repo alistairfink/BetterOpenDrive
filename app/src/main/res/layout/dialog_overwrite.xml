@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp">
+    android:layout_marginStart="40dp"
+    android:layout_marginEnd="40dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/dialog_copy_move_title"
+            android:id="@+id/dialog_overwrite_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Are You Sure?"
+            android:text="Overwrite"
             android:textColor="@android:color/black"
             android:layout_marginTop="16dp"
             android:layout_marginStart="15dp"
             android:textSize="25sp"/>
         <TextView
-            android:id="@+id/dialog_trash_description"
-            android:layout_width="wrap_content"
+            android:id="@+id/dialog_overwrite_description"
+            android:text="Sure?"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="15dp"
-            android:textSize="18sp" />
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="4dp"/>
     </LinearLayout>
 </LinearLayout>

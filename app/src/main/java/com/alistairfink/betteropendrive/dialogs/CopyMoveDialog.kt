@@ -32,7 +32,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.copy_move_item.view.*
 
-class CopyMoveDialog: DialogFragment()
+class CopyMoveDialog: DialogFragment(), IDialogListener
 {
     private lateinit var copyMoveDialogListener: IDialogListener
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -101,11 +101,11 @@ class CopyMoveDialog: DialogFragment()
             if(currentFolder.Files.any { a -> a.Name == name} )
             {
                 // TODO : OPEN DIALOG
-                //val ft = fragmentManager.beginTransaction()
-                //ft.addToBackStack(null)
-               // val dialogFragment = TrashDialog.newInstance(file.Name, file.FileId, true)
-                //dialogFragment.setTrashDialogListener(this)
-                //dialogFragment.show(ft, "dialog")
+                val ft = fragmentManager.beginTransaction()
+                ft.addToBackStack(null)
+                val dialogFragment = ConfirmOverwriteDialog.newInstance(name, true)
+                dialogFragment.setConfirmOverwriteDialogListener(this)
+                dialogFragment.show(ft, "dialog2")
             }
             else
             {
@@ -200,6 +200,11 @@ class CopyMoveDialog: DialogFragment()
         var copyMoveList = dialog.findViewById<RecyclerView>(R.id.copy_move_list)!!
         var parentIcon = dialog.findViewById<ImageView>(R.id.parent_folder_icon)!!
         getFolder(item.FolderId, copyMoveList, parentIcon)
+    }
+
+    override fun onSuccess(dialog: DialogInterface)
+    {
+        actionFile()
     }
 
     class CopyMoveItemAdapter(
