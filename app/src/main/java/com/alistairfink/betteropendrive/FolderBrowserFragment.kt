@@ -25,6 +25,7 @@ import com.alistairfink.betteropendrive.dialogs.RenameDialog
 import com.alistairfink.betteropendrive.dialogs.TrashDialog
 import com.alistairfink.betteropendrive.helpers.InternalStorageClient
 import com.alistairfink.betteropendrive.helpers.OpenDriveFileApiClient
+import com.alistairfink.betteropendrive.helpers.OpenDriveFolderApiClient
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -83,31 +84,8 @@ class FolderBrowserFragment : Fragment(), IDialogListener
     private fun getFolder(folderId: String)
     {
         folder_browser_refresh.isRefreshing = true
-        var sharedPreferences = SharedPreferencesClient(this.context)
-        var sessionId = sharedPreferences.getString(SharedPreferenceConstants.SessionId) as String
-        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
-        compositeDisposable.add(
-                repository.folderList(sessionId, folderId)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({ result ->
-                            var resultData =
-                                    if (folderId == "0")
-                                    {
-                                        FolderModelHelper.toFolderModel(result, true)
-                                    }
-                                    else
-                                    {
-                                        FolderModelHelper.toFolderModel(result)
-                                    }
-
-                            var internalStorage = InternalStorageClient(this.context)
-                            internalStorage.writeFolder(resultData, InternalStroageConstants.FolderPrefix + folderId)
-                            renderViews(resultData)
-                        }, { error ->
-                            error.printStackTrace()
-                        })
-        )
+        var openDriveFolderClient = OpenDriveFolderApiClient(this.context)
+        openDriveFolderClient.getFolder(folderId) { _folder -> renderViews(_folder)}
     }
 
     private fun renderViews(folder: FolderModel)
@@ -201,7 +179,36 @@ class FolderBrowserFragment : Fragment(), IDialogListener
 
     private fun onClickFolderMenu(folder: SubFolderModel, view: View)
     {
-        Toast.makeText(this.context, "Folder Clicked " + folder.FolderId, Toast.LENGTH_SHORT).show()
+        var popup = PopupMenu(this.context, view.menu)
+        popup.menuInflater.inflate(R.menu.folder_browser_popup_menu, popup.menu)
+        popup.setOnMenuItemClickListener { item ->
+            when(item.itemId)
+            {
+                R.id.folder_browser_popup_cut ->
+                {
+
+                }
+                R.id.folder_browser_popup_copy ->
+                {
+
+                }
+                R.id.folder_browser_popup_rename ->
+                {
+
+                }
+                R.id.folder_browser_popup_trash ->
+                {
+
+                }
+                R.id.folder_browser_popup_properties ->
+                {
+
+                }
+            }
+            true
+        }
+
+        popup.show()
     }
 
     private fun onClickFileMenu(file: FileModel, view: View)

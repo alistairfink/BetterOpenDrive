@@ -25,6 +25,7 @@ import com.alistairfink.betteropendrive.dataModels.FolderModelHelper
 import com.alistairfink.betteropendrive.dataModels.SubFolderModel
 import com.alistairfink.betteropendrive.helpers.InternalStorageClient
 import com.alistairfink.betteropendrive.helpers.OpenDriveFileApiClient
+import com.alistairfink.betteropendrive.helpers.OpenDriveFolderApiClient
 import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -150,32 +151,8 @@ class CopyMoveDialog: DialogFragment(), IDialogListener
             renderViews(folder, copyMoveList, parentIcon)
         }
 
-        // TODO: Abstract this into folder client since it's used in multiple places
-        var sharedPreferences = SharedPreferencesClient(this.context)
-        var sessionId = sharedPreferences.getString(SharedPreferenceConstants.SessionId) as String
-        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
-        compositeDisposable.add(
-                repository.folderList(sessionId, folderId)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({ result ->
-                            var resultData =
-                                    if (folderId == "0")
-                                    {
-                                        FolderModelHelper.toFolderModel(result, true)
-                                    }
-                                    else
-                                    {
-                                        FolderModelHelper.toFolderModel(result)
-                                    }
-
-                            var internalStorage = InternalStorageClient(this.context)
-                            internalStorage.writeFolder(resultData, InternalStroageConstants.FolderPrefix + folderId)
-                            renderViews(resultData, copyMoveList, parentIcon)
-                        }, { error ->
-                            error.printStackTrace()
-                        })
-        )
+        var openDriveFolderClient = OpenDriveFolderApiClient(this.context)
+        openDriveFolderClient.getFolder(folderId) { _folder -> renderViews(_folder, copyMoveList, parentIcon)}
     }
 
     private fun renderViews(folder: FolderModel, copyMoveList: RecyclerView, parentIcon: ImageView)
