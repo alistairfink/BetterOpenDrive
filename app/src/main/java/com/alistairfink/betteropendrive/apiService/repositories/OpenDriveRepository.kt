@@ -64,4 +64,10 @@ class OpenDriveRepository(var apiService: OpenDriveApiService)
     {
         return apiService.moveCopyFile(body = body)
     }
+
+    fun trashFolder(body: FolderTrashRequest)
+            : Observable<FolderTrashResponse>
+    {
+        return apiService.trashFolder(body = body)
+    }
 }

@@ -6,9 +6,11 @@ import com.alistairfink.betteropendrive.SharedPreferenceConstants
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
 import com.alistairfink.betteropendrive.dataModels.FolderModel
 import com.alistairfink.betteropendrive.dataModels.FolderModelHelper
+import com.alistairfink.betteropendrive.requestModels.FolderTrashRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.lang.Exception
 
 class OpenDriveFolderApiClient(private val context: Context)
 {
@@ -29,9 +31,28 @@ class OpenDriveFolderApiClient(private val context: Context)
 
     }
 
-    fun trash()
+    fun trash(folderId: String)
     {
-
+        var sharedPreferences = SharedPreferencesClient(context)
+        var sessionId = sharedPreferences.getString(SharedPreferenceConstants.SessionId) as String
+        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
+        var request = FolderTrashRequest(
+                SessionId = sessionId,
+                FolderId = folderId
+        )
+        compositeDisposable.add(
+                repository.trashFolder(request)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            if (result.DirUpdateTime <= 0)
+                            {
+                                throw Exception("This is bad")
+                            }
+                        }, { error ->
+                            error.printStackTrace()
+                        })
+        )
     }
 
     fun getFolder(folderId: String, callBack: (FolderModel) -> Unit)
