@@ -96,15 +96,25 @@ class CopyMoveDialog: DialogFragment(), IDialogListener
     {
         var isFile = arguments.getBoolean("isFile")
         var name = arguments.getString("itemName")
+        var id = arguments.getString("id")
         if (isFile)
         {
-            if(currentFolder.Files.any { a -> a.Name == name} )
+            // TODO: Check if same folder? Requires testing
+            var fileSameName = currentFolder.Files.firstOrNull { a -> a.Name == name }
+            if (fileSameName != null)
             {
-                val ft = fragmentManager.beginTransaction()
-                ft.addToBackStack(null)
-                val dialogFragment = ConfirmOverwriteDialog.newInstance(name, true)
-                dialogFragment.setConfirmOverwriteDialogListener(this)
-                dialogFragment.show(ft, "dialog2")
+                if (fileSameName.FileId == id)
+                {
+                    // TODO : Open Dialog Here "Can't Move/Copy this"
+                }
+                else
+                {
+                    val ft = fragmentManager.beginTransaction()
+                    ft.addToBackStack(null)
+                    val dialogFragment = ConfirmOverwriteDialog.newInstance(name, true)
+                    dialogFragment.setConfirmOverwriteDialogListener(this)
+                    dialogFragment.show(ft, "dialog2")
+                }
             }
             else
             {
