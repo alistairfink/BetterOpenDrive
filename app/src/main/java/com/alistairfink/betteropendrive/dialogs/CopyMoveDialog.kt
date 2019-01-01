@@ -36,7 +36,6 @@ import kotlinx.android.synthetic.main.copy_move_item.view.*
 class CopyMoveDialog: DialogFragment(), IDialogListener
 {
     private lateinit var copyMoveDialogListener: IDialogListener
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private lateinit var dialog: AlertDialog
     private lateinit var currentFolderId: String
     private lateinit var currentFolder: FolderModel
@@ -101,7 +100,6 @@ class CopyMoveDialog: DialogFragment(), IDialogListener
         {
             if(currentFolder.Files.any { a -> a.Name == name} )
             {
-                // TODO : OPEN DIALOG
                 val ft = fragmentManager.beginTransaction()
                 ft.addToBackStack(null)
                 val dialogFragment = ConfirmOverwriteDialog.newInstance(name, true)
@@ -160,6 +158,7 @@ class CopyMoveDialog: DialogFragment(), IDialogListener
         currentFolder = folder
         var renderList: MutableList<Any> = mutableListOf()
         // TODO : Refactor this so it doesn't happen for parent folder
+        // Consider using a stack instead of recalling parent folderId
         parentIcon.setOnClickListener {
             var copyMoveList = dialog.findViewById<RecyclerView>(R.id.copy_move_list)!!
             getFolder(folder.ParentFolderId!!, copyMoveList, parentIcon)

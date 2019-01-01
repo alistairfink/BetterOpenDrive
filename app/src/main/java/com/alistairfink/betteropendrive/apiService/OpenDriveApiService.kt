@@ -55,6 +55,14 @@ interface OpenDriveApiService
     fun trashFolder(@Body body: FolderTrashRequest)
             : Observable<FolderTrashResponse>
 
+    @POST("folder/rename.json")
+    fun renameFolder(@Body body: FolderRenameRequest)
+            : Observable<FolderRenameResponse>
+
+    @POST("folder/move_copy.json")
+    fun moveCopyFolder(@Body body: FolderMoveCopyRequest)
+            : Observable<FolderMoveCopyResponse>
+
     companion object Factory
     {
         fun create() : OpenDriveApiService

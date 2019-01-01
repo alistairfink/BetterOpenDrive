@@ -70,4 +70,16 @@ class OpenDriveRepository(var apiService: OpenDriveApiService)
     {
         return apiService.trashFolder(body = body)
     }
+
+    fun renameFolder(body: FolderRenameRequest)
+            : Observable<FolderRenameResponse>
+    {
+        return apiService.renameFolder(body = body)
+    }
+
+    fun moveCopyFolder(body: FolderMoveCopyRequest)
+            : Observable<FolderMoveCopyResponse>
+    {
+        return apiService.moveCopyFolder(body = body)
+    }
 }
