@@ -17,20 +17,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.alistairfink.betteropendrive.InternalStroageConstants
 import com.alistairfink.betteropendrive.R
-import com.alistairfink.betteropendrive.SharedPreferenceConstants
-import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
 import com.alistairfink.betteropendrive.dataModels.FileModel
 import com.alistairfink.betteropendrive.dataModels.FolderModel
-import com.alistairfink.betteropendrive.dataModels.FolderModelHelper
 import com.alistairfink.betteropendrive.dataModels.SubFolderModel
 import com.alistairfink.betteropendrive.helpers.InternalStorageClient
 import com.alistairfink.betteropendrive.helpers.OpenDriveFileApiClient
 import com.alistairfink.betteropendrive.helpers.OpenDriveFolderApiClient
-import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import com.squareup.picasso.Picasso
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.copy_move_item.view.*
 
 class CopyMoveDialog: DialogFragment(), IDialogListener
@@ -97,15 +90,18 @@ class CopyMoveDialog: DialogFragment(), IDialogListener
         var isFile = arguments.getBoolean("isFile")
         var name = arguments.getString("itemName")
         var id = arguments.getString("id")
+        var copy = arguments.getBoolean("copy")
         if (isFile)
         {
-            // TODO: Check if same folder? Requires testing
             var fileSameName = currentFolder.Files.firstOrNull { a -> a.Name == name }
             if (fileSameName != null)
             {
                 if (fileSameName.FileId == id)
                 {
-                    // TODO : Open Dialog Here "Can't Move/Copy this"
+                    val ft = fragmentManager.beginTransaction()
+                    ft.addToBackStack(null)
+                    val dialogFragment = CantCopyMoveDialog.newInstance(true, copy)
+                    dialogFragment.show(ft, "dialog2")
                 }
                 else
                 {
@@ -123,11 +119,23 @@ class CopyMoveDialog: DialogFragment(), IDialogListener
         }
         else
         {
+            var folderSameName = currentFolder.Folders.firstOrNull { a -> a.Name == name}
+            if (folderSameName != null)
+            {
+                val ft = fragmentManager.beginTransaction()
+                ft.addToBackStack(null)
+                val dialogFragment = CantCopyMoveDialog.newInstance(false, copy)
+                dialogFragment.show(ft, "dialog2")
+            }
+            else
+            {
+                actionFolder()
+            }
 
         }
     }
 
-    fun onClickCancel()
+    private fun onClickCancel()
     {
         dialog.cancel()
     }
@@ -144,6 +152,23 @@ class CopyMoveDialog: DialogFragment(), IDialogListener
         else
         {
             openDriveFileClient.move(id, currentFolderId)
+        }
+        dialog.dismiss()
+        copyMoveDialogListener.onSuccess(dialog)
+    }
+
+    private fun actionFolder()
+    {
+        var copy = arguments.getBoolean("copy")
+        var id = arguments.getString("id")
+        var openDriveFolderClient = OpenDriveFolderApiClient(this.context)
+        if (copy)
+        {
+            openDriveFolderClient.copy(id, currentFolderId)
+        }
+        else
+        {
+            openDriveFolderClient.move(id, currentFolderId)
         }
         dialog.dismiss()
         copyMoveDialogListener.onSuccess(dialog)
@@ -190,7 +215,15 @@ class CopyMoveDialog: DialogFragment(), IDialogListener
 
     override fun onSuccess(dialog: DialogInterface)
     {
-        actionFile()
+        var isFile = arguments.getBoolean("isFile")
+        if (isFile)
+        {
+            actionFile()
+        }
+        else
+        {
+            actionFolder()
+        }
     }
 
     class CopyMoveItemAdapter(

@@ -7,5 +7,5 @@ data class FolderMoveCopyRequest
         @SerializedName("session_id") var SessionId: String,
         @SerializedName("folder_id") var FolderId: String,
         @SerializedName("dst_folder_id") var DestinationFolderId: String,
-        @SerializedName("move") var Move: Boolean
+        @SerializedName("move") var Move: String
 )

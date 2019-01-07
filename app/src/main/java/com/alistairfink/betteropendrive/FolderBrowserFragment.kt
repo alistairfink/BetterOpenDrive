@@ -13,11 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
-import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
 import com.alistairfink.betteropendrive.dataModels.FileModel
 import com.alistairfink.betteropendrive.dataModels.FolderModel
-import com.alistairfink.betteropendrive.dataModels.FolderModelHelper
 import com.alistairfink.betteropendrive.dataModels.SubFolderModel
 import com.alistairfink.betteropendrive.dialogs.CopyMoveDialog
 import com.alistairfink.betteropendrive.dialogs.IDialogListener
@@ -26,11 +23,8 @@ import com.alistairfink.betteropendrive.dialogs.TrashDialog
 import com.alistairfink.betteropendrive.helpers.InternalStorageClient
 import com.alistairfink.betteropendrive.helpers.OpenDriveFileApiClient
 import com.alistairfink.betteropendrive.helpers.OpenDriveFolderApiClient
-import com.alistairfink.betteropendrive.helpers.SharedPreferencesClient
 import com.squareup.picasso.Picasso
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.folder_browser_item.view.*
 import kotlinx.android.synthetic.main.fragment_folder_browser.*
 import java.io.File
@@ -186,11 +180,11 @@ class FolderBrowserFragment : Fragment(), IDialogListener
             {
                 R.id.folder_browser_popup_cut ->
                 {
-
+                    copyMove(folder, false)
                 }
                 R.id.folder_browser_popup_copy ->
                 {
-
+                    copyMove(folder, true)
                 }
                 R.id.folder_browser_popup_rename ->
                 {
@@ -281,7 +275,7 @@ class FolderBrowserFragment : Fragment(), IDialogListener
         popup.show()
     }
 
-    private fun copyMove(file: FileModel, copy: Boolean)
+    private fun copyMove(item: Any, copy: Boolean)
     {
         val ft = fragmentManager.beginTransaction()
         val prev = fragmentManager.findFragmentByTag("dialog")
@@ -290,8 +284,16 @@ class FolderBrowserFragment : Fragment(), IDialogListener
             ft.remove(prev)
         }
         ft.addToBackStack(null)
-        val dialogFragment =  CopyMoveDialog.newInstance(file.Name, file.FileId, true, copy)
-        dialogFragment.setCopyMoveDialogListener(this)
+        var dialogFragment: CopyMoveDialog? = null
+        if (item is FileModel)
+        {
+            dialogFragment = CopyMoveDialog.newInstance(item.Name, item.FileId, true, copy)
+        }
+        else if (item is SubFolderModel)
+        {
+            dialogFragment = CopyMoveDialog.newInstance(item.Name, item.FolderId, false, copy)
+        }
+        dialogFragment!!.setCopyMoveDialogListener(this)
         dialogFragment.show(ft, "dialog")
     }
 

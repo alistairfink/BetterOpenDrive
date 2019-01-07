@@ -18,7 +18,7 @@ class OpenDriveFolderApiClient(private val context: Context)
 {
     private val compositeDisposable = CompositeDisposable()
     // TODO : Refactor these exceptions in here and file client too
-    fun cut(folderId: String, destinationId: String)
+    fun move(folderId: String, destinationId: String)
     {
         var sharedPreferences = SharedPreferencesClient(context)
         var sessionId = sharedPreferences.getString(SharedPreferenceConstants.SessionId)!!
@@ -26,7 +26,7 @@ class OpenDriveFolderApiClient(private val context: Context)
                 SessionId = sessionId,
                 FolderId = folderId,
                 DestinationFolderId = destinationId,
-                Move = true
+                Move = "true"
         )
         moveCopy(request)
     }
@@ -39,7 +39,7 @@ class OpenDriveFolderApiClient(private val context: Context)
                 SessionId = sessionId,
                 FolderId = folderId,
                 DestinationFolderId = destinationId,
-                Move = false
+                Move = "false"
         )
         moveCopy(request)
     }

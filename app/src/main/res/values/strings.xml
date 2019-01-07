@@ -8,4 +8,5 @@
     <string name="avatar">Profile Avatar</string>
     <string name="loading">Loading...</string>
     <string name="unsupported_file_type_text">No Preview Available For Selected File Type</string>
+    <string name="invalid_operation">Invalid Operation</string>
 </resources>

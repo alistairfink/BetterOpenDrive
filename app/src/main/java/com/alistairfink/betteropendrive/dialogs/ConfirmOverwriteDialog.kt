@@ -20,7 +20,6 @@ class ConfirmOverwriteDialog: DialogFragment()
             var args = Bundle()
             fragment.arguments = args
             args.putString("itemName", itemName)
-            args.putBoolean("isFile", isFile)
             return fragment
         }
     }
@@ -36,16 +35,8 @@ class ConfirmOverwriteDialog: DialogFragment()
         val inflater = activity.layoutInflater
         val view = inflater.inflate(R.layout.dialog_overwrite, null)
 
-        var isFile = arguments.getBoolean("isFile")
         val title = view.findViewById(R.id.dialog_overwrite_title) as TextView
-        if (isFile)
-        {
-            title.text = "Overwrite File?"
-        }
-        else
-        {
-            title.text = "Overwrite Folder?"
-        }
+        title.text = "Overwrite File?"
 
         var itemName = arguments.getString("itemName")
         var description = view.findViewById(R.id.dialog_overwrite_description) as TextView
