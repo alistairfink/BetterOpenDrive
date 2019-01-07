@@ -207,7 +207,16 @@ class FolderBrowserFragment : Fragment(), IDialogListener
                 }
                 R.id.folder_browser_popup_trash ->
                 {
-
+                    val ft = fragmentManager.beginTransaction()
+                    val prev = fragmentManager.findFragmentByTag("dialog")
+                    if (prev != null)
+                    {
+                        ft.remove(prev)
+                    }
+                    ft.addToBackStack(null)
+                    val dialogFragment = TrashDialog.newInstance(folder.Name, folder.FolderId, false)
+                    dialogFragment.setTrashDialogListener(this)
+                    dialogFragment.show(ft, "dialog")
                 }
                 R.id.folder_browser_popup_properties ->
                 {

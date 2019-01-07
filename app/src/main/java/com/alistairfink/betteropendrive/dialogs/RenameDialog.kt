@@ -76,14 +76,13 @@ class RenameDialog: DialogFragment()
         {
             var openDriveFileClient = OpenDriveFileApiClient(this.context)
             openDriveFileClient.rename(newName, id)
-            dialog.dismiss()
         }
         else
         {
             var openDriveFolderClient = OpenDriveFolderApiClient(this.context)
             openDriveFolderClient.rename(newName, id)
-            dialog.dismiss()
         }
+        dialog.dismiss()
         renameDialogListener.onSuccess(dialog)
     }
 }

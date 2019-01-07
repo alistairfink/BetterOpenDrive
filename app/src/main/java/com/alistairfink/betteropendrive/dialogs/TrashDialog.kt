@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog
 import android.widget.TextView
 import com.alistairfink.betteropendrive.R
 import com.alistairfink.betteropendrive.helpers.OpenDriveFileApiClient
+import com.alistairfink.betteropendrive.helpers.OpenDriveFolderApiClient
 
 class TrashDialog: DialogFragment()
 {
@@ -75,12 +76,13 @@ class TrashDialog: DialogFragment()
         {
             var openDriveFileClient = OpenDriveFileApiClient(this.context)
             openDriveFileClient.trash(id)
-            dialog.dismiss()
         }
         else
         {
-
+            var openDriveFolderClient = OpenDriveFolderApiClient(this.context)
+            openDriveFolderClient.trash(id)
         }
+        dialog.dismiss()
         trashDialogListener.onSuccess(dialog)
     }
 
