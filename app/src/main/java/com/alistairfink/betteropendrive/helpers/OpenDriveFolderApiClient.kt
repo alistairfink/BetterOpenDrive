@@ -44,7 +44,7 @@ class OpenDriveFolderApiClient(private val context: Context)
         moveCopy(request)
     }
 
-    fun rename(folderId: String, newName: String)
+    fun rename(newName: String, folderId: String)
     {
         var sharedPreferences = SharedPreferencesClient(context)
         var sessionId = sharedPreferences.getString(SharedPreferenceConstants.SessionId)!!
@@ -59,6 +59,7 @@ class OpenDriveFolderApiClient(private val context: Context)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
+                            android.os.Debug.waitForDebugger()
                             if (result.Name != newName)
                             {
                                 throw Exception("Folder Rename Operation Did Not Complete Properly")

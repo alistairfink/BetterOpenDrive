@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.TextView
 import com.alistairfink.betteropendrive.R
 import com.alistairfink.betteropendrive.helpers.OpenDriveFileApiClient
+import com.alistairfink.betteropendrive.helpers.OpenDriveFolderApiClient
 
 class RenameDialog: DialogFragment()
 {
@@ -79,7 +80,9 @@ class RenameDialog: DialogFragment()
         }
         else
         {
-
+            var openDriveFolderClient = OpenDriveFolderApiClient(this.context)
+            openDriveFolderClient.rename(newName, id)
+            dialog.dismiss()
         }
         renameDialogListener.onSuccess(dialog)
     }

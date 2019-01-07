@@ -194,7 +194,16 @@ class FolderBrowserFragment : Fragment(), IDialogListener
                 }
                 R.id.folder_browser_popup_rename ->
                 {
-
+                    var ft = fragmentManager.beginTransaction()
+                    var prev = fragmentManager.findFragmentByTag("dialog")
+                    if (prev != null)
+                    {
+                        ft.remove(prev)
+                    }
+                    ft.addToBackStack(null)
+                    val dialogFragment = RenameDialog.newInstance(folder.Name, folder.FolderId, false)
+                    dialogFragment.setRenameDialogListener(this)
+                    dialogFragment.show(ft, "dialog")
                 }
                 R.id.folder_browser_popup_trash ->
                 {
