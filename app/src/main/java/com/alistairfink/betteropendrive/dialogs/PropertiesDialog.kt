@@ -1,10 +1,10 @@
 package com.alistairfink.betteropendrive.dialogs
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
+import android.view.View
 import com.alistairfink.betteropendrive.R
 import com.google.gson.Gson
 
@@ -27,7 +27,16 @@ class PropertiesDialog: DialogFragment()
     {
         val builder = AlertDialog.Builder(activity)
         val inflater = activity.layoutInflater
-        val view = inflater.inflate(R.layout.dialog_properties, null)
+        var isFile = arguments.getBoolean("isFile")
+        val view =
+                if (isFile) {
+                    inflater.inflate(R.layout.dialog_properties_file, null)
+                }
+                else
+                {
+                    inflater.inflate(R.layout.dialog_properties_folder, null)
+                }
+
 
         /*
         var isFile = arguments.getBoolean("isFile")
