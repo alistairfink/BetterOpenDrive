@@ -218,7 +218,7 @@ class FolderBrowserFragment : Fragment(), IDialogListener
                         ft.remove(prev)
                     }
                     ft.addToBackStack(null)
-                    val dialogFragment = PropertiesDialog.newInstance(folder, false)
+                    val dialogFragment = PropertiesFolderDialog.newInstance(folder)
                     dialogFragment.show(ft, "dialog")
                 }
             }
@@ -278,7 +278,7 @@ class FolderBrowserFragment : Fragment(), IDialogListener
                         ft.remove(prev)
                     }
                     ft.addToBackStack(null)
-                    val dialogFragment = PropertiesDialog.newInstance(file, true)
+                    val dialogFragment = PropertiesFileDialog.newInstance(file)
                     dialogFragment.show(ft, "dialog")
                 }
             }

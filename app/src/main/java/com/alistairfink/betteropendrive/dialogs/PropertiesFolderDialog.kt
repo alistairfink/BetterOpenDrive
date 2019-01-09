@@ -4,21 +4,21 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
-import android.view.View
 import com.alistairfink.betteropendrive.R
+import com.alistairfink.betteropendrive.dataModels.SubFolderModel
 import com.google.gson.Gson
 
-class PropertiesDialog: DialogFragment()
+class PropertiesFolderDialog: DialogFragment()
 {
+    private lateinit var _folder: SubFolderModel
     companion object
     {
-        fun newInstance(item: Any, isFile: Boolean): PropertiesDialog
+        fun newInstance(folder: SubFolderModel): PropertiesFolderDialog
         {
-            var fragment = PropertiesDialog()
+            var fragment = PropertiesFolderDialog()
             var args = Bundle()
             fragment.arguments = args
-            args.putString("item", Gson().toJson(item))
-            args.putBoolean("isFile", isFile)
+            args.putString("folder", Gson().toJson(folder))
             return fragment
         }
     }
@@ -27,16 +27,11 @@ class PropertiesDialog: DialogFragment()
     {
         val builder = AlertDialog.Builder(activity)
         val inflater = activity.layoutInflater
-        var isFile = arguments.getBoolean("isFile")
-        val view =
-                if (isFile) {
-                    inflater.inflate(R.layout.dialog_properties_file, null)
-                }
-                else
-                {
-                    inflater.inflate(R.layout.dialog_properties_folder, null)
-                }
+        val view = inflater.inflate(R.layout.dialog_properties_folder, null)
 
+        var folderString = arguments.getString("folder")
+        var folder = Gson().fromJson(folderString, SubFolderModel::class.java)
+        _folder = folder
 
         /*
         var isFile = arguments.getBoolean("isFile")
