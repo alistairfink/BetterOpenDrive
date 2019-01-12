@@ -9,4 +9,12 @@
     <string name="loading">Loading...</string>
     <string name="unsupported_file_type_text">No Preview Available For Selected File Type</string>
     <string name="invalid_operation">Invalid Operation</string>
+    <string name="place_holder">Place Holder</string>
+    <string name="property_name">Name:</string>
+    <string name="property_size">Size:</string>
+    <string name="property_sub_folders">Sub Folders:</string>
+    <string name="property_modified_date">Last Modified:</string>
+    <string name="property_creation_date">Date Created:</string>
+    <string name="property_download_link">Download Link:</string>
+    <string name="property_version">Version:</string>
 </resources>

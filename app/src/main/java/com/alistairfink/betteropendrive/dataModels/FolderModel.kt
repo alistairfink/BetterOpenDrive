@@ -3,6 +3,7 @@ package com.alistairfink.betteropendrive.dataModels
 import com.alistairfink.betteropendrive.responseModels.Files
 import com.alistairfink.betteropendrive.responseModels.FolderListResponse
 import com.alistairfink.betteropendrive.responseModels.Folders
+import com.google.gson.annotations.SerializedName
 import java.io.File
 import java.util.*
 
@@ -45,6 +46,7 @@ class FolderModelHelper
                     FolderId = subFolder.FolderId,
                     Name = subFolder.Name,
                     Link = subFolder.Link,
+                     ChildFolders = subFolder.ChildFolders,
                     DateCreated = Date(subFolder.DateCreated*1000L),
                     DateModified = Date(subFolder.DateModified*1000L)
             )
@@ -59,7 +61,8 @@ class FolderModelHelper
                     FileHash = file.FileHash,
                     Link = file.DownloadLink,
                     Thumbnail = file.ThumbLink,
-                    Extension = file.Extension
+                    Extension = file.Extension,
+                    Version = file.Version
             )
         }
     }
@@ -78,6 +81,7 @@ data class SubFolderModel
         var FolderId: String,
         var Name: String,
         var Link: String,
+        var ChildFolders: Int,
         var DateCreated: Date,
         var DateModified: Date
 )
@@ -87,6 +91,7 @@ data class FileModel
         var FileId: String,
         var Name: String,
         var Size: Int,
+        var Version: String,
         var DateModified: Date,
         var FileHash: String,
         var Link: String,

@@ -16,10 +16,7 @@ import android.widget.PopupMenu
 import com.alistairfink.betteropendrive.dataModels.FileModel
 import com.alistairfink.betteropendrive.dataModels.FolderModel
 import com.alistairfink.betteropendrive.dataModels.SubFolderModel
-import com.alistairfink.betteropendrive.dialogs.CopyMoveDialog
-import com.alistairfink.betteropendrive.dialogs.IDialogListener
-import com.alistairfink.betteropendrive.dialogs.RenameDialog
-import com.alistairfink.betteropendrive.dialogs.TrashDialog
+import com.alistairfink.betteropendrive.dialogs.*
 import com.alistairfink.betteropendrive.helpers.InternalStorageClient
 import com.alistairfink.betteropendrive.helpers.OpenDriveFileApiClient
 import com.alistairfink.betteropendrive.helpers.OpenDriveFolderApiClient
@@ -214,7 +211,15 @@ class FolderBrowserFragment : Fragment(), IDialogListener
                 }
                 R.id.folder_browser_popup_properties ->
                 {
-
+                    val ft = fragmentManager.beginTransaction()
+                    val prev = fragmentManager.findFragmentByTag("dialog")
+                    if (prev != null)
+                    {
+                        ft.remove(prev)
+                    }
+                    ft.addToBackStack(null)
+                    val dialogFragment = PropertiesFolderDialog.newInstance(folder)
+                    dialogFragment.show(ft, "dialog")
                 }
             }
             true
@@ -266,7 +271,15 @@ class FolderBrowserFragment : Fragment(), IDialogListener
                 }
                 R.id.folder_browser_popup_properties ->
                 {
-
+                    val ft = fragmentManager.beginTransaction()
+                    val prev = fragmentManager.findFragmentByTag("dialog")
+                    if (prev != null)
+                    {
+                        ft.remove(prev)
+                    }
+                    ft.addToBackStack(null)
+                    val dialogFragment = PropertiesFileDialog.newInstance(file)
+                    dialogFragment.show(ft, "dialog")
                 }
             }
             true

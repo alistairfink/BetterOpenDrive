@@ -90,6 +90,7 @@ class FolderModelTest {
         Assert.assertEquals(subFolder.Link, subFolderModel.Link)
         Assert.assertEquals(Date(subFolder.DateCreated*1000L), subFolderModel.DateCreated)
         Assert.assertEquals(Date(subFolder.DateModified*1000L), subFolderModel.DateModified)
+        Assert.assertEquals(subFolder.ChildFolders, subFolderModel.ChildFolders)
     }
 
     @Test
@@ -106,5 +107,6 @@ class FolderModelTest {
         Assert.assertEquals(file.DownloadLink, fileModel.Link)
         Assert.assertEquals(file.ThumbLink, fileModel.Thumbnail)
         Assert.assertEquals(file.Extension, fileModel.Extension)
+        Assert.assertEquals(file.Version, fileModel.Version)
     }
 }
