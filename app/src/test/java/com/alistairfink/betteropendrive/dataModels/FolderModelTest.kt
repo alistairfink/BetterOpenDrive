@@ -106,5 +106,6 @@ class FolderModelTest {
         Assert.assertEquals(file.DownloadLink, fileModel.Link)
         Assert.assertEquals(file.ThumbLink, fileModel.Thumbnail)
         Assert.assertEquals(file.Extension, fileModel.Extension)
+        Assert.assertEquals(file.Version, fileModel.Version)
     }
 }
