@@ -46,6 +46,7 @@ class FolderModelHelper
                     FolderId = subFolder.FolderId,
                     Name = subFolder.Name,
                     Link = subFolder.Link,
+                     ChildFolders = subFolder.ChildFolders,
                     DateCreated = Date(subFolder.DateCreated*1000L),
                     DateModified = Date(subFolder.DateModified*1000L)
             )
@@ -80,6 +81,7 @@ data class SubFolderModel
         var FolderId: String,
         var Name: String,
         var Link: String,
+        var ChildFolders: Int,
         var DateCreated: Date,
         var DateModified: Date
 )

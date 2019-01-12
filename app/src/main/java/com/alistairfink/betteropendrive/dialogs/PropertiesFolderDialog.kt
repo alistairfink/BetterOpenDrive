@@ -4,6 +4,8 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
+import android.widget.ImageView
+import android.widget.TextView
 import com.alistairfink.betteropendrive.R
 import com.alistairfink.betteropendrive.dataModels.SubFolderModel
 import com.google.gson.Gson
@@ -33,52 +35,27 @@ class PropertiesFolderDialog: DialogFragment()
         var folder = Gson().fromJson(folderString, SubFolderModel::class.java)
         _folder = folder
 
-        /*
-        var isFile = arguments.getBoolean("isFile")
-        val title = view.findViewById(R.id.dialog_copy_move_title) as TextView
-        if (isFile)
-        {
-            title.text = "Send File to Trash?"
-        }
-        else
-        {
-            title.text = "Send Folder to Trash?"
-        }
+        var name = view.findViewById(R.id.folder_name) as TextView
+        var fullName = view.findViewById(R.id.folder_full_name) as TextView
+        var subFolders = view.findViewById(R.id.folder_sub_folders) as TextView
+        var downloadLink = view.findViewById(R.id.folder_download_link) as TextView
+        var createdDate = view.findViewById(R.id.folder_creation) as TextView
+        var lastModified = view.findViewById(R.id.folder_last_modified) as TextView
 
-        //
-        var itemName = arguments.getString("itemName")
-        var newTitle = view.findViewById(R.id.dialog_trash_description) as TextView
-        newTitle.text = "Are you sure you want to send $itemName to the trash? This action can be undone later."
-*/
+        name.text = _folder.Name
+        fullName.text = _folder.Name
+        subFolders.text = _folder.ChildFolders.toString()
+        downloadLink.text = _folder.Link
+        createdDate.text = _folder.DateCreated.toString()
+        lastModified.text = _folder.DateModified.toString()
+
         builder
-                .setPositiveButton("CONFIRM") { dialog, _ ->
-                    //onClickConfirm(dialog)
+                .setPositiveButton("Close") { dialog, _ ->
+                    dialog.dismiss()
                 }
-                .setNegativeButton("CANCEL") { dialog, _ ->
-                    dialog.cancel()
-                }
+
 
         builder.setView(view)
         return builder.create()
     }
-    /*
-
-    private fun onClickConfirm(dialog: DialogInterface)
-    {
-        var id = arguments.getString("id")
-        var isFile = arguments.getBoolean("isFile")
-        if (isFile)
-        {
-            var openDriveFileClient = OpenDriveFileApiClient(this.context)
-            openDriveFileClient.trash(id)
-        }
-        else
-        {
-            var openDriveFolderClient = OpenDriveFolderApiClient(this.context)
-            openDriveFolderClient.trash(id)
-        }
-        dialog.dismiss()
-        trashDialogListener.onSuccess(dialog)
-    }
-*/
 }

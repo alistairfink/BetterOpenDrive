@@ -1,13 +1,17 @@
 package com.alistairfink.betteropendrive.dialogs
 
 import android.app.Dialog
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
+import android.widget.ImageView
+import android.widget.TextView
 import com.alistairfink.betteropendrive.R
 import com.alistairfink.betteropendrive.dataModels.FileModel
-import com.alistairfink.betteropendrive.dataModels.SubFolderModel
+import com.alistairfink.betteropendrive.helpers.DataHelper
 import com.google.gson.Gson
+import com.squareup.picasso.Picasso
 
 class PropertiesFileDialog: DialogFragment()
 {
@@ -35,52 +39,28 @@ class PropertiesFileDialog: DialogFragment()
         var file = Gson().fromJson(fileString, FileModel::class.java)
         _file = file
 
-        /*
-        var isFile = arguments.getBoolean("isFile")
-        val title = view.findViewById(R.id.dialog_copy_move_title) as TextView
-        if (isFile)
-        {
-            title.text = "Send File to Trash?"
-        }
-        else
-        {
-            title.text = "Send Folder to Trash?"
-        }
+        var thumbnail = view.findViewById(R.id.file_thumbnail) as ImageView
+        var name = view.findViewById(R.id.file_name) as TextView
+        var size = view.findViewById(R.id.file_size) as TextView
+        var version = view.findViewById(R.id.file_version) as TextView
+        var downloadLink = view.findViewById(R.id.file_download_link) as TextView
+        var lastModified = view.findViewById(R.id.file_last_modified) as TextView
+        var fullName = view.findViewById(R.id.file_full_name) as TextView
 
-        //
-        var itemName = arguments.getString("itemName")
-        var newTitle = view.findViewById(R.id.dialog_trash_description) as TextView
-        newTitle.text = "Are you sure you want to send $itemName to the trash? This action can be undone later."
-*/
+        Picasso.with(context).load(Uri.parse(_file.Thumbnail)).into(thumbnail)
+        name.text = _file.Name
+        fullName.text = _file.Name
+        size.text = DataHelper.dataSizeToString(_file.Size)
+        version.text = if (_file.Version.isNullOrBlank()) { "n/a" } else { _file.Version }
+        downloadLink.text = _file.Link
+        lastModified.text = _file.DateModified.toString()
+
         builder
-                .setPositiveButton("CONFIRM") { dialog, _ ->
-                    //onClickConfirm(dialog)
-                }
-                .setNegativeButton("CANCEL") { dialog, _ ->
-                    dialog.cancel()
+                .setPositiveButton("Close") { dialog, _ ->
+                    dialog.dismiss()
                 }
 
         builder.setView(view)
         return builder.create()
     }
-    /*
-
-    private fun onClickConfirm(dialog: DialogInterface)
-    {
-        var id = arguments.getString("id")
-        var isFile = arguments.getBoolean("isFile")
-        if (isFile)
-        {
-            var openDriveFileClient = OpenDriveFileApiClient(this.context)
-            openDriveFileClient.trash(id)
-        }
-        else
-        {
-            var openDriveFolderClient = OpenDriveFolderApiClient(this.context)
-            openDriveFolderClient.trash(id)
-        }
-        dialog.dismiss()
-        trashDialogListener.onSuccess(dialog)
-    }
-*/
 }

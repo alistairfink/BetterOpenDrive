@@ -3,43 +3,54 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minHeight="500dp"
-    android:maxHeight="500dp"
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp">
     <LinearLayout
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginStart="15dp">
+        <ImageView
+            android:id="@+id/file_thumbnail"
+            android:src="@drawable/ic_file"
+            android:layout_height="35dp"
+            android:layout_width="35dp"
+            android:layout_marginTop="2dp"
+            android:layout_gravity="center_vertical"/>
         <TextView
-            android:id="@+id/dialog_copy_move_title"
+            android:id="@+id/file_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="File"
+            android:text="@string/place_holder"
             android:textColor="@android:color/black"
             android:layout_marginTop="16dp"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="10dp"
             android:textSize="25sp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:ellipsize="end"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginLeft="15dp">
+        android:layout_marginStart="15dp">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name: "/>
+                android:text="@string/property_name"/>
             <TextView
+                android:id="@+id/file_full_name"
+                android:layout_marginStart="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Test"/>
+                android:text="@string/place_holder"
+                android:textIsSelectable="true"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,11 +59,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Version: "/>
+                android:text="@string/property_size"/>
             <TextView
+                android:id="@+id/file_size"
+                android:layout_marginStart="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Test"/>
+                android:text="@string/place_holder"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -61,11 +74,46 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Size: "/>
+                android:text="@string/property_version"/>
+            <TextView
+                android:id="@+id/file_version"
+                android:layout_marginStart="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/place_holder"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginEnd="10dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Test"/>
+                android:text="@string/property_download_link"/>
+            <TextView
+                android:id="@+id/file_download_link"
+                android:layout_marginStart="3dp"
+                android:autoLink="web"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="true"
+                android:text="@string/place_holder"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/property_download_link"/>
+            <TextView
+                android:id="@+id/file_last_modified"
+                android:layout_marginStart="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/place_holder"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
