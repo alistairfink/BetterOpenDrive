@@ -2,6 +2,7 @@ package com.alistairfink.betteropendrive
 
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -221,6 +222,14 @@ class FolderBrowserFragment : Fragment(), IDialogListener
                     val dialogFragment = PropertiesFolderDialog.newInstance(folder)
                     dialogFragment.show(ft, "dialog")
                 }
+                R.id.folder_browser_popup_share ->
+                {
+                    val shareIntent = Intent()
+                    shareIntent.action = Intent.ACTION_SEND
+                    shareIntent.type="text/plain"
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, folder.Link)
+                    startActivity(Intent.createChooser(shareIntent,getString(R.string.send_to)))
+                }
             }
             true
         }
@@ -280,6 +289,14 @@ class FolderBrowserFragment : Fragment(), IDialogListener
                     ft.addToBackStack(null)
                     val dialogFragment = PropertiesFileDialog.newInstance(file)
                     dialogFragment.show(ft, "dialog")
+                }
+                R.id.folder_browser_popup_share ->
+                {
+                    val shareIntent = Intent()
+                    shareIntent.action = Intent.ACTION_SEND
+                    shareIntent.type="text/plain"
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, file.Link)
+                    startActivity(Intent.createChooser(shareIntent,getString(R.string.send_to)))
                 }
             }
             true

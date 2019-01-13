@@ -17,4 +17,5 @@
     <string name="property_creation_date">Date Created:</string>
     <string name="property_download_link">Download Link:</string>
     <string name="property_version">Version:</string>
+    <string name="send_to">Send To</string>
 </resources>
