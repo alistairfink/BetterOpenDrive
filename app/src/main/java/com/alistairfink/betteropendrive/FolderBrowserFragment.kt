@@ -90,6 +90,18 @@ class FolderBrowserFragment : Fragment(), IDialogListener
         folder_browser_list.layoutManager = LinearLayoutManager(this.context)
         folder_browser_list.adapter = adapter
         folder_browser_refresh.isRefreshing = false
+        folder_browser_list.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                if (dy < 0 && !folder_browser_fab.isShown)
+                {
+                    folder_browser_fab.show()
+                }
+                else if (dy > 0 && folder_browser_fab.isShown)
+                {
+                    folder_browser_fab.hide()
+                }
+            }
+        })
     }
 
     private fun onClickListener(item: Any)
