@@ -108,11 +108,11 @@ class OpenDriveFolderApiClient(private val context: Context)
                             var resultData =
                                     if (folderId == "0")
                                     {
-                                        FolderModelHelper.toFolderModel(result, true)
+                                        FolderModelHelper.toFolderModel(folderId, result, true)
                                     }
                                     else
                                     {
-                                        FolderModelHelper.toFolderModel(result)
+                                        FolderModelHelper.toFolderModel(folderId, result)
                                     }
 
                             var internalStorage = InternalStorageClient(this.context)

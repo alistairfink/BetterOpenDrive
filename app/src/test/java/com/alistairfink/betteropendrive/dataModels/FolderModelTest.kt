@@ -71,8 +71,9 @@ class FolderModelTest {
         folder.Files.add(filesFactory())
         folder.Files.add(filesFactory())
 
-        var folderModel = FolderModelHelper.toFolderModel(folder)
+        var folderModel = FolderModelHelper.toFolderModel("0", folder)
 
+        Assert.assertEquals("0", folderModel.FolderId)
         Assert.assertEquals(folder.Name, folderModel.Name)
         Assert.assertEquals(folder.ParentFolderId, folderModel.ParentFolderId)
         Assert.assertEquals(folder.Folders.size, folderModel.Folders.size)

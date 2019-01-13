@@ -11,7 +11,7 @@ class FolderModelHelper
 {
     companion object
     {
-        fun toFolderModel(folderListResponse: FolderListResponse, isRoot: Boolean = false): FolderModel
+        fun toFolderModel(folderId:String, folderListResponse: FolderListResponse, isRoot: Boolean = false): FolderModel
         {
             var subFolders: MutableList<SubFolderModel> = mutableListOf()
             for (subFolder in folderListResponse.Folders)
@@ -35,6 +35,7 @@ class FolderModelHelper
 
             return FolderModel (
                     Name = name,
+                    FolderId = folderId,
                     ParentFolderId = parentFolderId,
                     Folders = subFolders,
                     Files = files
@@ -71,6 +72,7 @@ class FolderModelHelper
 data class FolderModel
 (
         var Name: String,
+        var FolderId: String,
         var ParentFolderId: String?,
         var Folders: MutableList<SubFolderModel>,
         var Files: MutableList<FileModel>
