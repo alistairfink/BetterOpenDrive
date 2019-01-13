@@ -18,4 +18,6 @@
     <string name="property_download_link">Download Link:</string>
     <string name="property_version">Version:</string>
     <string name="send_to">Send To</string>
+    <string name="create_folder">New Folder</string>
+    <string name="create_folder_hint">Enter Folder Name</string>
 </resources>

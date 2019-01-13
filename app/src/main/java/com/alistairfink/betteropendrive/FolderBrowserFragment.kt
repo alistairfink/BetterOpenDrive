@@ -147,7 +147,17 @@ class FolderBrowserFragment : Fragment(), IDialogListener
                 }
                 R.id.add_button_popup_add_folder ->
                 {
-
+                    var folderId = arguments.getString("folderId")
+                    var ft = fragmentManager.beginTransaction()
+                    var prev = fragmentManager.findFragmentByTag("dialog")
+                    if (prev != null)
+                    {
+                        ft.remove(prev)
+                    }
+                    ft.addToBackStack(null)
+                    val dialogFragment = CreateFolderDialog.newInstance(folderId)
+                    dialogFragment.setCreateFolderDialogListener(this)
+                    dialogFragment.show(ft, "dialog")
                 }
             }
             true
