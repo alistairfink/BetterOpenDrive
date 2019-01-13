@@ -82,4 +82,10 @@ class OpenDriveRepository(var apiService: OpenDriveApiService)
     {
         return apiService.moveCopyFolder(body = body)
     }
+
+    fun folderCreate(body: FolderCreateRequest)
+            : Observable<FolderCreateResponse>
+    {
+        return apiService.folderCreate(body = body)
+    }
 }

@@ -63,6 +63,10 @@ interface OpenDriveApiService
     fun moveCopyFolder(@Body body: FolderMoveCopyRequest)
             : Observable<FolderMoveCopyResponse>
 
+    @POST("folder.json")
+    fun folderCreate(@Body body: FolderCreateRequest)
+            : Observable<FolderCreateResponse>
+
     companion object Factory
     {
         fun create() : OpenDriveApiService

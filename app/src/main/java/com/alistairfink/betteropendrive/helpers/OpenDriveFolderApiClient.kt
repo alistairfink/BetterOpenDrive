@@ -6,6 +6,7 @@ import com.alistairfink.betteropendrive.SharedPreferenceConstants
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
 import com.alistairfink.betteropendrive.dataModels.FolderModel
 import com.alistairfink.betteropendrive.dataModels.FolderModelHelper
+import com.alistairfink.betteropendrive.requestModels.FolderCreateRequest
 import com.alistairfink.betteropendrive.requestModels.FolderMoveCopyRequest
 import com.alistairfink.betteropendrive.requestModels.FolderRenameRequest
 import com.alistairfink.betteropendrive.requestModels.FolderTrashRequest
@@ -117,6 +118,31 @@ class OpenDriveFolderApiClient(private val context: Context)
                             var internalStorage = InternalStorageClient(this.context)
                             internalStorage.writeFolder(resultData, InternalStroageConstants.FolderPrefix + folderId)
                             callBack.invoke(resultData)
+                        }, { error ->
+                            error.printStackTrace()
+                        })
+        )
+    }
+
+    fun createFolder(folderName: String, parentId: String)
+    {
+        var sharedPreferences = SharedPreferencesClient(context)
+        var sessionId = sharedPreferences.getString(SharedPreferenceConstants.SessionId) as String
+        var request = FolderCreateRequest(
+                SessionId = sessionId,
+                FolderName = folderName,
+                FolderSubParentId = parentId
+        )
+        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
+        compositeDisposable.add(
+                repository.folderCreate(request)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            if (result.Name != folderName)
+                            {
+                                throw Exception("Folder Creation Failed")
+                            }
                         }, { error ->
                             error.printStackTrace()
                         })
