@@ -155,7 +155,16 @@ class FolderBrowserFragment : Fragment(), IDialogListener
             {
                 R.id.add_button_popup_add_file ->
                 {
+                    val addFileIntent = Intent()
+                    addFileIntent.type = "file/"
+                    addFileIntent.action = Intent.ACTION_GET_CONTENT
 
+                    startActivityForResult(Intent.createChooser(addFileIntent, "Choose File"), 1)
+
+
+                    //addFileIntent.type="text/plain"
+                    //addFileIntent.putExtra(Intent.EXTRA_TEXT, folder.Link)
+                    //startActivity(Intent.createChooser(shareIntent,getString(R.string.send_to)))
                 }
                 R.id.add_button_popup_add_folder ->
                 {
@@ -176,6 +185,19 @@ class FolderBrowserFragment : Fragment(), IDialogListener
         }
 
         popup.show()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // TODO: Turn on Uploading animation here
+        var dataUri = data!!.data
+        var client = OpenDriveFileApiClient(this.context)
+        client.uploadFile(dataUri.toString()) { fileUploadCallBack() }
+    }
+
+    fun fileUploadCallBack()
+    {
+        // TODO: Turn off Uploading animation here.
     }
 
     private fun onClickMenuListener(item: Any, view: View)

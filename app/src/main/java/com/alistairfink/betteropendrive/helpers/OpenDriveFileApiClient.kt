@@ -109,6 +109,12 @@ class OpenDriveFileApiClient(private val context: Context)
         moveCopy(fileCopyRequest)
     }
 
+    fun uploadFile(uri: String, callback: () -> Unit)
+    {
+        // TODO: Implement this
+        callback.invoke()
+    }
+
     private fun moveCopy(request: FileMoveCopyRequest)
     {
         var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
