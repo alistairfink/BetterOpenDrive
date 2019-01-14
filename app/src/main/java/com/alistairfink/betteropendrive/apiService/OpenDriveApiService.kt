@@ -67,6 +67,10 @@ interface OpenDriveApiService
     fun folderCreate(@Body body: FolderCreateRequest)
             : Observable<FolderCreateResponse>
 
+    @POST("upload/create_file.json")
+    fun fileCreate(@Body body: FileCreateRequest)
+            : Observable<FileCreateResponse>
+
     companion object Factory
     {
         fun create() : OpenDriveApiService

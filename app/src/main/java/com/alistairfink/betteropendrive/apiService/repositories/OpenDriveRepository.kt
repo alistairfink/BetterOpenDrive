@@ -88,4 +88,10 @@ class OpenDriveRepository(var apiService: OpenDriveApiService)
     {
         return apiService.folderCreate(body = body)
     }
+
+    fun fileCreate(body: FileCreateRequest)
+            : Observable<FileCreateResponse>
+    {
+        return apiService.fileCreate(body = body)
+    }
 }
