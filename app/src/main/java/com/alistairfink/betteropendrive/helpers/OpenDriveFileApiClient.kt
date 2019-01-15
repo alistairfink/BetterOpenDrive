@@ -4,15 +4,14 @@ import android.content.Context
 import com.alistairfink.betteropendrive.SharedPreferenceConstants
 import com.alistairfink.betteropendrive.apiService.repositories.OpenDriveRepositoryProvider
 import com.alistairfink.betteropendrive.dataModels.FileModel
-import com.alistairfink.betteropendrive.requestModels.FileMoveCopyRequest
-import com.alistairfink.betteropendrive.requestModels.FileRenameRequest
-import com.alistairfink.betteropendrive.requestModels.FileTrashRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.io.FileInputStream
 import android.R.attr.process
-import com.alistairfink.betteropendrive.requestModels.FileCreateRequest
+import android.net.Uri
+import android.util.Base64
+import com.alistairfink.betteropendrive.requestModels.*
 
 
 class OpenDriveFileApiClient(private val context: Context)
@@ -119,11 +118,12 @@ class OpenDriveFileApiClient(private val context: Context)
         var sharedPreferences = SharedPreferencesClient(context)
         var sessionId = sharedPreferences.getString(SharedPreferenceConstants.SessionId)!!
         // TODO: Figure out how to check for file overwriting
-        // TODO: Call to create file
+        // Call to create file
+        var fileName = uri.substring(uri.lastIndexOf('/')+1)
         var createFileRequest = FileCreateRequest (
                 SessionId = sessionId,
                 FolderId = folderId,
-                FileName = "", // TODO: Get this from uri
+                FileName = fileName,
                 OpenIfExists = 1
         )
         compositeDisposable.add(
@@ -131,17 +131,41 @@ class OpenDriveFileApiClient(private val context: Context)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
+                            android.os.Debug.waitForDebugger()
                             var chunkOffset = 0
+                            var fileSize = 0
                             var buffer = ByteArray(4096)
-                            // This might not work
-                            var inputStream = FileInputStream(uri)
-                            var chunk: Int
+                            var inputStream = context.contentResolver.openInputStream(Uri.parse(uri))
+                            var chunk: Int = 0
                             while ({ chunk = inputStream.read(buffer); chunk }() > 0)
                             {
-                                // TODO: Upload call here
+                                var currentChunkOffset = chunkOffset
+                                fileSize += chunk
+                                var test = ""
+
+                                // TODO: Upload call here and change chunk offset
+
+                                while(currentChunkOffset == chunkOffset) { }
                             }
                             // TODO: Call to Close file
-
+                            var closeFileRequest = FileUploadCloseRequest (
+                                    SessionId = sessionId,
+                                    FileId = result.FileId,
+                                    FileSize = fileSize
+                            )
+                            compositeDisposable.add(
+                                    repository.fileUploadClose(closeFileRequest)
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribeOn(Schedulers.io())
+                                            .subscribe( { resultInner ->
+                                                if (resultInner.FileId != result.FileId)
+                                                {
+                                                    throw Exception("File Upload Failed")
+                                                }
+                                            }, { error ->
+                                                error.printStackTrace()
+                                            })
+                            )
                             inputStream.close()
                             callback.invoke()
                         }, { error ->
