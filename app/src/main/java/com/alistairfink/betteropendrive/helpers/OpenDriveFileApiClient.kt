@@ -10,6 +10,10 @@ import com.alistairfink.betteropendrive.requestModels.FileTrashRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.io.FileInputStream
+import android.R.attr.process
+import com.alistairfink.betteropendrive.requestModels.FileCreateRequest
+
 
 class OpenDriveFileApiClient(private val context: Context)
 {
@@ -109,10 +113,41 @@ class OpenDriveFileApiClient(private val context: Context)
         moveCopy(fileCopyRequest)
     }
 
-    fun uploadFile(uri: String, callback: () -> Unit)
+    fun uploadFile(uri: String, folderId: String, callback: () -> Unit)
     {
-        // TODO: Implement this
-        callback.invoke()
+        var repository = OpenDriveRepositoryProvider.provideOpenDriveRepository()
+        var sharedPreferences = SharedPreferencesClient(context)
+        var sessionId = sharedPreferences.getString(SharedPreferenceConstants.SessionId)!!
+        // TODO: Figure out how to check for file overwriting
+        // TODO: Call to create file
+        var createFileRequest = FileCreateRequest (
+                SessionId = sessionId,
+                FolderId = folderId,
+                FileName = "", // TODO: Get this from uri
+                OpenIfExists = 1
+        )
+        compositeDisposable.add(
+                repository.fileCreate(createFileRequest)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            var chunkOffset = 0
+                            var buffer = ByteArray(4096)
+                            // This might not work
+                            var inputStream = FileInputStream(uri)
+                            var chunk: Int
+                            while ({ chunk = inputStream.read(buffer); chunk }() > 0)
+                            {
+                                // TODO: Upload call here
+                            }
+                            // TODO: Call to Close file
+
+                            inputStream.close()
+                            callback.invoke()
+                        }, { error ->
+                            error.printStackTrace()
+                        })
+        )
     }
 
     private fun moveCopy(request: FileMoveCopyRequest)

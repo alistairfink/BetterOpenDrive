@@ -71,6 +71,10 @@ interface OpenDriveApiService
     fun fileCreate(@Body body: FileCreateRequest)
             : Observable<FileCreateResponse>
 
+    @POST("upload/close_file_upload.json")
+    fun fileUploadClose(@Body body: FileUploadCloseRequest)
+            : Observable<FileUploadCloseResponse>
+
     companion object Factory
     {
         fun create() : OpenDriveApiService

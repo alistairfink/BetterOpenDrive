@@ -94,4 +94,10 @@ class OpenDriveRepository(var apiService: OpenDriveApiService)
     {
         return apiService.fileCreate(body = body)
     }
+
+    fun fileUploadClose(body: FileUploadCloseRequest)
+            : Observable<FileUploadCloseResponse>
+    {
+        return apiService.fileUploadClose(body = body)
+    }
 }
