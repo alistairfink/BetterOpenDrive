@@ -136,18 +136,34 @@ class OpenDriveFileApiClient(private val context: Context)
                             var fileSize = 0
                             var buffer = ByteArray(4096)
                             var inputStream = context.contentResolver.openInputStream(Uri.parse(uri))
-                            var chunk: Int = 0
+                            var chunk = 0
                             while ({ chunk = inputStream.read(buffer); chunk }() > 0)
                             {
+                                // TODO: Test This
+                                // Call to Upload Each Chunk
                                 var currentChunkOffset = chunkOffset
                                 fileSize += chunk
-                                var test = ""
-
-                                // TODO: Upload call here and change chunk offset
-
+                                var uploadRequest = FileUploadRequest (
+                                        SessionId = sessionId,
+                                        FileId = result.FileId,
+                                        TempLocation = result.TempLocation,
+                                        ChunkOffset = chunkOffset,
+                                        ChunkSize = 4096,
+                                        FileData = buffer
+                                )
+                                compositeDisposable.add(
+                                        repository.fileUpload(uploadRequest)
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribeOn(Schedulers.io())
+                                                .subscribe({ uploadResult ->
+                                                    chunkOffset += uploadResult
+                                                }, { error ->
+                                                    error.printStackTrace()
+                                                })
+                                )
                                 while(currentChunkOffset == chunkOffset) { }
                             }
-                            // TODO: Call to Close file
+                            // Call to Close File
                             var closeFileRequest = FileUploadCloseRequest (
                                     SessionId = sessionId,
                                     FileId = result.FileId,

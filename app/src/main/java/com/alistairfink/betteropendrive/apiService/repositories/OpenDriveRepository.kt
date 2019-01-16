@@ -100,4 +100,17 @@ class OpenDriveRepository(var apiService: OpenDriveApiService)
     {
         return apiService.fileUploadClose(body = body)
     }
+
+    fun fileUpload(body: FileUploadRequest)
+            : Observable<Int>
+    {
+        return apiService.fileUpload(
+                SessionId = body.SessionId,
+                FileId = body.FileId,
+                TempLocation = body.TempLocation,
+                ChunkOffset = body.ChunkOffset,
+                ChunkSize = body.ChunkSize,
+                FileData = body.FileData
+        )
+    }
 }

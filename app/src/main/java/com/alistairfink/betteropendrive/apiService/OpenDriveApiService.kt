@@ -8,13 +8,9 @@ import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-
+import retrofit2.http.*
 
 
 interface OpenDriveApiService
@@ -74,6 +70,17 @@ interface OpenDriveApiService
     @POST("upload/close_file_upload.json")
     fun fileUploadClose(@Body body: FileUploadCloseRequest)
             : Observable<FileUploadCloseResponse>
+
+    @FormUrlEncoded
+    @POST("upload/upload_file_chunk.json")
+    fun fileUpload(
+            @Field("session_id") SessionId: String,
+            @Field("file_id") FileId: String,
+            @Field("temp_location") TempLocation: String,
+            @Field("chunk_offset") ChunkOffset: Int,
+            @Field("chunk_size") ChunkSize: Int,
+            @Field("file_data") FileData: ByteArray)
+            : Observable<Int>
 
     companion object Factory
     {
