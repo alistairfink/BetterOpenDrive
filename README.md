@@ -4,34 +4,34 @@ BetterOpenDrive is a client application utilising OpenDrive's public APIs. This 
 WARNING: This application is not yet completed and as such the UI/UX aspects have not been worked on (current UI is place holder until functionality is ready).
 
 <p align="center">
-    Folder Browser View
+    	Folder Browser View<br />
 	<img src="./screenshots/Screenshot_3.png" width="300">
 </p>
 
 
 
 <p align="center">
-    Folder Menu
+    	Folder Menu<br />
 	<img src="./screenshots/Screenshot_2.png" width="300">
 </p>
 
 
 <p align="center">
-    Preview PDF Files
-    <img src="./screenshots/Screenshot_1.png" width="300">
+	Preview PDF Files<br />
+	<img src="./screenshots/Screenshot_1.png" width="300">
 </p>
 
 
 
 <p align="center">
-	Preview Image Files
-    <img src="./screenshots/Screenshot_4.png" width="300">
+	Preview Image Files<br />
+	<img src="./screenshots/Screenshot_4.png" width="300">
 </p>
 
 
 
 <p align="center">
-    Preview Text Files
+	Preview Text Files<br />
 	<img src="./screenshots/Screenshot_5.png" width="300">
 </p>
 
