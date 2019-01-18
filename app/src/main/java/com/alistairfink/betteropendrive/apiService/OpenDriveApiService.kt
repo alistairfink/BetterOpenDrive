@@ -71,6 +71,11 @@ interface OpenDriveApiService
     fun fileUploadClose(@Body body: FileUploadCloseRequest)
             : Observable<FileUploadCloseResponse>
 
+/*
+    @POST("upload/upload_file_chunk.json")
+    fun fileUpload(@Body body: FileUploadRequest)
+            : Observable<Int>
+    */
     @FormUrlEncoded
     @POST("upload/upload_file_chunk.json")
     fun fileUpload(
